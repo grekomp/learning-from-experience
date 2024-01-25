@@ -1,5 +1,5 @@
 <script>
-	import '../app.pcss';
+	import '../app.css';
 	import Header from './Header.svelte';
 </script>
 
