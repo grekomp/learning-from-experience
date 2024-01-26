@@ -10,7 +10,7 @@
 		<slot />
 	</main>
 
-	<footer>
+	<footer class="text-center text-sm text-muted-foreground">
 		<p>© Grzegorz Palian</p>
 	</footer>
 </div>
