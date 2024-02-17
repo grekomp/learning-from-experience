@@ -11,6 +11,9 @@
 			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
 				<a href="/about">About</a>
 			</li>
+			<li aria-current={$page.url.pathname === '/posts' ? 'page' : undefined}>
+				<a href="/posts">Posts</a>
+			</li>
 		</ul>
 	</nav>
 </header>
