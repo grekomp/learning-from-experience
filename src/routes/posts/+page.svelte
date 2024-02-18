@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Markdown from '$lib/components/markdown/markdown.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 
@@ -16,7 +17,7 @@
 					<Card.Description>{post.subtitle}</Card.Description>
 				</Card.Header>
 				<Card.Content>
-					{post.content}
+					<Markdown source={post.content} />
 				</Card.Content>
 				<Card.Footer>
 					<Button href={`/posts/${post.id}`} variant="outline">Continue reading</Button>
