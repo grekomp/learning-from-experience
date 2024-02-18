@@ -1,16 +1,15 @@
 <script>
 	import '../app.css';
+	import Footer from './Footer.svelte';
 	import Header from './Header.svelte';
 </script>
 
 <div class="app">
-	<Header></Header>
+	<Header />
 
 	<main>
 		<slot />
 	</main>
 
-	<footer class="text-center text-sm text-muted-foreground">
-		<p>© Grzegorz Palian</p>
-	</footer>
+	<Footer />
 </div>
