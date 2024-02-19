@@ -1,18 +1,23 @@
 <script>
-	import { page } from '$app/stores';
+	import A from '$lib/components/ui/basic-html/a.svelte';
+	import Navlink from '$lib/components/ui/navlink/navlink.svelte';
 </script>
 
-<header>
-	<nav>
-		<ul>
-			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Home</a>
+<header class="mb-5 border-b">
+	<nav class="mx-auto max-w-5xl">
+		<ul class="flex items-center gap-5">
+			<li>
+				<A
+					href="/"
+					class="block p-3 text-xl font-black text-white transition-colors hover:text-foreground focus:text-foreground"
+					>Learning from Experience</A
+				>
 			</li>
-			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
-				<a href="/about">About</a>
+			<li>
+				<Navlink href="/about">About</Navlink>
 			</li>
-			<li aria-current={$page.url.pathname === '/posts' ? 'page' : undefined}>
-				<a href="/posts">Posts</a>
+			<li>
+				<Navlink href="/posts">Posts</Navlink>
 			</li>
 		</ul>
 	</nav>
