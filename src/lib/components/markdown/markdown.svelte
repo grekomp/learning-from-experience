@@ -55,11 +55,11 @@
 	}
 
 	:global(.markdown blockquote) {
-		@apply mt-6 border-l-2 pl-6 italic;
+		@apply mt-6 border-l-2 pl-6 italic text-muted-foreground;
 	}
 
 	:global(.markdown code) {
-		@apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold;
+		@apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-rose-600;
 	}
 
 	:global(.markdown a) {
