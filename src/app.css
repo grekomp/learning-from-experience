@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+	html {
+		font-size: 20px;
+	}
+
 	:root {
 		--background: 0 0% 100%;
 		--foreground: 222.2 84% 4.9%;
@@ -37,16 +41,18 @@
 	}
 
 	.dark {
-		--background: 240 10% 3.9%;
-		--foreground: 0 0% 93%;
+		--background: 0 0% 12%;
+		--foreground: 0 0% 80%;
 
 		--muted: 240 3.7% 15.9%;
-		--muted-foreground: 240 5% 60%;
+		--muted-foreground: 240 2% 40%;
+
+		--emphasized-foreground: 0 0% 95%;
 
 		--popover: 240 10% 3.9%;
 		--popover-foreground: 0 0% 98%;
 
-		--card: 240 10% 6%;
+		--card: 0 0% 8%;
 		--card-foreground: 0 0% 98%;
 
 		--primary: 0 0% 98%;
