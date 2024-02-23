@@ -62,6 +62,14 @@
 		@apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-rose-600;
 	}
 
+	:global(.markdown pre) {
+		@apply block [&:not(:first-child)]:mt-2;
+	}
+
+	:global(.markdown pre > code) {
+		@apply block overflow-x-auto px-4 py-2;
+	}
+
 	:global(.markdown a) {
 		@apply text-accent-foreground underline decoration-blue-900 decoration-2 underline-offset-8  hover:decoration-4;
 	}
