@@ -1,11 +1,20 @@
 <script lang="ts">
-	import SvelteMarkdown from 'svelte-markdown';
+	import 'highlight.js/styles/github-dark.css';
+	import rehypeHighlight from 'rehype-highlight';
+	import SvelteMarkdown from 'svelte-exmarkdown';
 
 	export let source: string | null | undefined;
 </script>
 
 <div class="markdown flex flex-col items-center">
-	<SvelteMarkdown {source} />
+	<SvelteMarkdown
+		md={source || ''}
+		plugins={[
+			{
+				rehypePlugin: [rehypeHighlight, { detect: true }],
+			},
+		]}
+	/>
 </div>
 
 <style lang="postcss">
@@ -58,15 +67,15 @@
 		@apply mt-6 border-l-2 pl-6 italic text-muted-foreground;
 	}
 
-	:global(.markdown code) {
-		@apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold text-rose-600;
+	:global(.markdown :not(pre) > code) {
+		@apply mx-1 rounded bg-muted px-[0.3rem] py-[0.2rem] text-emerald-500;
 	}
 
 	:global(.markdown pre) {
-		@apply block [&:not(:first-child)]:mt-2;
+		@apply [&:not(:first-child)]:mt-6;
 	}
 
-	:global(.markdown pre > code) {
+	:global(.markdown pre > code:not(.hljs)) {
 		@apply block overflow-x-auto px-4 py-2;
 	}
 
