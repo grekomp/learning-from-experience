@@ -1,4 +1,5 @@
 <script>
+	import FloatingFocus from '$lib/components/floating-focus/floating-focus.svelte';
 	import '../app.css';
 	import Footer from './Footer.svelte';
 	import Header from './Header.svelte';
@@ -13,3 +14,5 @@
 
 	<Footer />
 </div>
+
+<FloatingFocus />
