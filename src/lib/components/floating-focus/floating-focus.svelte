@@ -1,17 +1,34 @@
 <script lang="ts">
-	let width = '100vw';
-	let height = '100vh';
-	let top = '-2px';
-	let left = '-2px';
-	let transition = false;
+	let width = '0px';
+	let height = '0px';
+	let top = '50vh';
+	let left = '50vw';
+	let transitionBounds = false;
+	let transitionVisibility = true;
 	let enabled = false;
+	let visible = false;
 
-	const disable = () => {
+	// Used to detect when changing focus causes the scroll position to change
+	let isChangingFocus = false;
+
+	const enable = () => {
+		enabled = true;
+		transitionVisibility = true;
+	};
+
+	const disable = (immediate?: boolean) => {
 		enabled = false;
-		transition = false;
+		visible = false;
+		transitionBounds = false;
+		transitionVisibility = !immediate;
 	};
 
 	const handleFocus = (event: Event) => {
+		isChangingFocus = true;
+
+		// We don't need to detect keypresses manually, instead we rely on the browser's built-in `:focus-visible` pseudo-class
+		if (document.querySelector(':focus-visible')) enable();
+
 		const target = event.target;
 		const body = document.body;
 
@@ -36,7 +53,9 @@
 
 			// Delay enabling the transition so that the initial render is not animated
 			requestAnimationFrame(() => {
-				transition = true;
+				transitionBounds = true;
+				visible = true;
+				isChangingFocus = false;
 			});
 		}
 	};
@@ -46,41 +65,47 @@
 		if (!event.relatedTarget) disable();
 	};
 
-	const handleKeydown = (event: KeyboardEvent) => {
-		switch (event.key) {
-			case 'Tab':
-				break;
-			case 'ArrowUp':
-			case 'ArrowDown':
-			case 'ArrowLeft':
-			case 'ArrowRight':
-				// Arrow keys should only display the focus overlay if they caused an element to be focused - eg. in tabs component
-				if (!document.querySelector(':focus-visible')) return;
-				break;
-			default:
-				return;
-		}
+	const handleMousedown = () => disable(true);
 
-		enabled = true;
+	const handleScroll = (event: Event) => {
+		if (isChangingFocus) return;
+		disable(true);
 	};
-
-	const handleMousedown = disable;
 </script>
 
 <svelte:document
 	on:focus|capture={handleFocus}
 	on:blur|capture={handleBlur}
-	on:keydown|capture={handleKeydown}
 	on:mousedown|capture={handleMousedown}
+	on:scroll={handleScroll}
 />
 
 <div
-	style:display={enabled ? 'block' : 'none'}
 	style:width
 	style:height
 	style:top
 	style:left
-	style:transition-duration={transition ? undefined : '0s'}
+	style:--bounds-transition-duration={transitionBounds ? undefined : '0s'}
+	style:--visibility-transition-duration={transitionVisibility ? undefined : '0s'}
 	id="floating-focus-indicator"
-	class="pointer-events-none absolute rounded outline outline-offset-2 outline-pink-600 transition-all duration-300"
-></div>
+	class="pointer-events-none absolute rounded outline outline-offset-2 outline-pink-600"
+	class:opacity-0={!visible || !enabled}
+	class:scale-150={!visible || !enabled}
+/>
+
+<style>
+	#floating-focus-indicator {
+		--visibility-transition-duration: 0.3s;
+		--bounds-transition-duration: 0.3s;
+
+		transition:
+			opacity var(--visibility-transition-duration),
+			transform var(--visibility-transition-duration),
+			width var(--bounds-transition-duration),
+			height var(--bounds-transition-duration),
+			top var(--bounds-transition-duration),
+			bottom var(--bounds-transition-duration),
+			left var(--bounds-transition-duration),
+			right var(--bounds-transition-duration);
+	}
+</style>

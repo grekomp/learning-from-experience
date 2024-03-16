@@ -16,3 +16,9 @@
 </div>
 
 <FloatingFocus />
+
+<style>
+	:global(body) {
+		overflow: hidden auto;
+	}
+</style>
