@@ -5,16 +5,13 @@
 	let left = '50vw';
 	let transitionBounds = false;
 	let transitionVisibility = true;
-
-	/**
-	 * Splitting the `enabled` and `visible` states allows us to
-	 */
 	let enabled = false;
 	let visible = false;
 
 	/**
 	 * Scrolling with the mouse wheel or arrow keys should hide the overlay.
-	 * The exception is when the scroll was caused by switching focus to an off-screen element.
+	 * The exception is when the scroll was caused by switching focus
+	 * to an off-screen element.
 	 */
 	let isChangingFocus = false;
 
@@ -33,7 +30,8 @@
 	const handleFocus = (event: Event) => {
 		isChangingFocus = true;
 
-		// We don't need to detect keypresses manually, instead we rely on the browser's built-in `:focus-visible` pseudo-class
+		// We don't need to detect keypresses manually, instead we rely on
+		// the browser's built-in `:focus-visible` pseudo-class
 		if (document.querySelector(':focus-visible')) enable();
 
 		const target = event.target;
