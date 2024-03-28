@@ -5,10 +5,17 @@
 	let left = '50vw';
 	let transitionBounds = false;
 	let transitionVisibility = true;
+
+	/**
+	 * Splitting the `enabled` and `visible` states allows us to
+	 */
 	let enabled = false;
 	let visible = false;
 
-	// Used to detect when changing focus causes the scroll position to change
+	/**
+	 * Scrolling with the mouse wheel or arrow keys should hide the overlay.
+	 * The exception is when the scroll was caused by switching focus to an off-screen element.
+	 */
 	let isChangingFocus = false;
 
 	const enable = () => {
@@ -67,7 +74,7 @@
 
 	const handleMousedown = () => disable(true);
 
-	const handleScroll = (event: Event) => {
+	const handleScroll = () => {
 		if (isChangingFocus) return;
 		disable(true);
 	};
@@ -88,13 +95,27 @@
 	style:--bounds-transition-duration={transitionBounds ? undefined : '0s'}
 	style:--visibility-transition-duration={transitionVisibility ? undefined : '0s'}
 	id="floating-focus-indicator"
-	class="pointer-events-none absolute rounded outline outline-offset-2 outline-pink-600"
-	class:opacity-0={!visible || !enabled}
-	class:scale-150={!visible || !enabled}
+	class:visible={visible && enabled}
 />
 
 <style>
 	#floating-focus-indicator {
+		/* We don't want the overlay to be clickable */
+		pointer-events: none;
+
+		/* These styles will control the look of the outline */
+		outline: solid 3px deeppink;
+		outline-offset: 2px;
+		border-radius: 5px;
+
+		/* We want the overlay to be positioned above all other content */
+		position: absolute;
+		z-index: 9999999;
+
+		/* By default, the overlay should be invisible */
+		opacity: 0;
+		transform: scale(1.5);
+
 		--visibility-transition-duration: 0.3s;
 		--bounds-transition-duration: 0.3s;
 
@@ -107,5 +128,10 @@
 			bottom var(--bounds-transition-duration),
 			left var(--bounds-transition-duration),
 			right var(--bounds-transition-duration);
+	}
+
+	#floating-focus-indicator.visible {
+		opacity: 1;
+		transform: scale(1);
 	}
 </style>
