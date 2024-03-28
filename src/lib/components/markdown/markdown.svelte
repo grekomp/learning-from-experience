@@ -75,6 +75,10 @@
 		@apply [&:not(:first-child)]:mt-6;
 	}
 
+	:global(.markdown > pre) {
+		@apply max-w-4xl;
+	}
+
 	:global(.markdown pre > code:not(.hljs)) {
 		@apply block overflow-x-auto px-4 py-2;
 	}
