@@ -176,42 +176,40 @@
 
 <svelte:body on:mouseup={handleMouseUp} on:mousemove={handleMouseMove} />
 
-<div class="p-2">
-	<div
-		class="grid h-[1000px] [--grid-gap:2px]"
-		style:grid-template={getGridTemplate(gridLines)}
-		bind:this={gridContainer}
-	>
-		{#each cells as cell}
-			<EditableGridCell bounds={cell.bounds} title={cell.title} />
-		{/each}
+<div
+	class="grid h-full w-full [--grid-gap:2px]"
+	style:grid-template={getGridTemplate(gridLines)}
+	bind:this={gridContainer}
+>
+	{#each cells as cell}
+		<EditableGridCell bounds={cell.bounds} title={cell.title} />
+	{/each}
 
-		{#each groupedLines.cols as line}
-			{#key line.name}
-				<EditableGridLineResizeIndicator
-					lineName={line.name}
-					start={line.start}
-					end={line.end}
-					direction={GridLineDirection.Col}
-					isDragged={draggedLine?.name === line.name &&
-						draggedLine.direction === GridLineDirection.Col}
-					on:mousedown={(event) => handleGridLineMouseDown(event, line.name, GridLineDirection.Col)}
-				/>
-			{/key}
-		{/each}
+	{#each groupedLines.cols as line}
+		{#key line.name}
+			<EditableGridLineResizeIndicator
+				lineName={line.name}
+				start={line.start}
+				end={line.end}
+				direction={GridLineDirection.Col}
+				isDragged={draggedLine?.name === line.name &&
+					draggedLine.direction === GridLineDirection.Col}
+				on:mousedown={(event) => handleGridLineMouseDown(event, line.name, GridLineDirection.Col)}
+			/>
+		{/key}
+	{/each}
 
-		{#each groupedLines.rows as line}
-			{#key line.name}
-				<EditableGridLineResizeIndicator
-					lineName={line.name}
-					start={line.start}
-					end={line.end}
-					direction={GridLineDirection.Row}
-					isDragged={draggedLine?.name === line.name &&
-						draggedLine.direction === GridLineDirection.Row}
-					on:mousedown={(event) => handleGridLineMouseDown(event, line.name, GridLineDirection.Row)}
-				/>
-			{/key}
-		{/each}
-	</div>
+	{#each groupedLines.rows as line}
+		{#key line.name}
+			<EditableGridLineResizeIndicator
+				lineName={line.name}
+				start={line.start}
+				end={line.end}
+				direction={GridLineDirection.Row}
+				isDragged={draggedLine?.name === line.name &&
+					draggedLine.direction === GridLineDirection.Row}
+				on:mousedown={(event) => handleGridLineMouseDown(event, line.name, GridLineDirection.Row)}
+			/>
+		{/key}
+	{/each}
 </div>

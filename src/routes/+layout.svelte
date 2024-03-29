@@ -5,10 +5,10 @@
 	import Header from './Header.svelte';
 </script>
 
-<div class="app">
+<div class="flex h-full flex-col items-stretch">
 	<Header />
 
-	<main>
+	<main class="grow">
 		<slot />
 	</main>
 
@@ -18,7 +18,12 @@
 <FloatingFocus />
 
 <style>
+	:global(html) {
+		height: 100%;
+	}
+
 	:global(body) {
+		height: 100%;
 		overflow: hidden auto;
 	}
 </style>
