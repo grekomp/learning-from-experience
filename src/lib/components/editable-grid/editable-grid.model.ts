@@ -1,6 +1,11 @@
 export const gridStartLine = 'start' as const;
 export const gridEndLine = 'end' as const;
 export const gridLineSnapDistance = 10;
+export const gridMinCellWidth = 40;
+export const gridMinCellHeight = 40;
+export const gridLineKeyboardMoveDistance = 20;
+export const gridLineKeyboardMoveDistanceFast = 100;
+export const gridLineKeyboardMoveDistanceSlow = 1;
 
 export interface EditableGridCellBounds {
 	row: EditableGridCellBoundsAxis;
@@ -27,8 +32,8 @@ export interface EditableGridLine {
 }
 
 export interface EditableGridLines {
-	rows: EditableGridLine[];
-	cols: EditableGridLine[];
+	row: EditableGridLine[];
+	col: EditableGridLine[];
 }
 
 export interface EditableGridLineGroups {
@@ -52,8 +57,8 @@ export enum GridLineDirection {
 	Col = 'col',
 }
 
-export interface DraggingLine {
-	name: string;
+export interface DraggedLine {
+	line: EditableGridLine;
 	direction: GridLineDirection;
 	startX: number;
 	startY: number;

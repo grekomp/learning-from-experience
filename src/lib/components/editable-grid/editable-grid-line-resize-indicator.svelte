@@ -1,22 +1,26 @@
 <script lang="ts">
+	import type { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
 	import {
 		gridEndLine,
 		type GridLineDirection,
+		type GridLineGroup,
 	} from '$lib/components/editable-grid/editable-grid.model';
 
 	export let direction: GridLineDirection;
-	export let lineName: string;
-	export let start: string;
-	export let end: string;
-	export let isDragged: boolean = false;
+	export let line: GridLineGroup;
+	export let grid: EditableGridController;
+
+	const draggedLine = grid.draggedLine;
+
+	$: isDragged = $draggedLine?.line.name === line.name && $draggedLine?.direction === direction;
 </script>
 
 {#if direction === 'row'}
 	<div
-		style:grid-row-start={lineName}
+		style:grid-row-start={line.name}
 		style:grid-row-end={gridEndLine}
-		style:grid-column-start={start}
-		style:grid-column-end={end}
+		style:grid-column-start={line.start}
+		style:grid-column-end={line.end}
 		class="pointer-events-none relative z-50 [--grid-line-area:10px]"
 	>
 		<!-- TODO: Accessability props -->
@@ -31,8 +35,8 @@
 			aria-valuemax="100"
 			aria-orientation="horizontal"
 			tabindex="0"
-			on:keydown
-			on:mousedown
+			on:keydown={(event) => grid.handleLineKeyboardMove(event, line.name, direction)}
+			on:mousedown={(event) => grid.handleDragStart(event, line.name, direction)}
 		>
 			<div
 				class="absolute bottom-0 left-0 right-0 top-0 my-auto h-[2px] transition-all group-hover:bg-neutral-400"
@@ -42,9 +46,9 @@
 	</div>
 {:else}
 	<div
-		style:grid-row-start={start}
-		style:grid-row-end={end}
-		style:grid-column-start={lineName}
+		style:grid-row-start={line.start}
+		style:grid-row-end={line.end}
+		style:grid-column-start={line.name}
 		style:grid-column-end={gridEndLine}
 		class="pointer-events-none relative z-50 [--grid-line-area:10px]"
 	>
@@ -59,8 +63,8 @@
 			aria-valuemax="100"
 			aria-orientation="vertical"
 			tabindex="0"
-			on:keydown
-			on:mousedown
+			on:keydown={(event) => grid.handleLineKeyboardMove(event, line.name, direction)}
+			on:mousedown={(event) => grid.handleDragStart(event, line.name, direction)}
 		>
 			<div
 				class="absolute bottom-0 left-0 right-0 top-0 mx-auto w-[2px] transition-all group-hover:bg-neutral-400"

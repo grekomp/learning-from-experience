@@ -2,7 +2,10 @@ import {
 	GridLineDirection,
 	gridEndLine,
 	gridLineSnapDistance,
+	gridMinCellHeight,
+	gridMinCellWidth,
 	gridStartLine,
+	type EditableGridCellBounds,
 	type EditableGridCellData,
 	type EditableGridLine,
 	type EditableGridLineGroups,
@@ -11,28 +14,25 @@ import {
 } from '$lib/components/editable-grid/editable-grid.model';
 
 export function getGridTemplate(gridLines: EditableGridLines): string {
-	const rowPositionsTotal = gridLines.rows.reduce((acc, row) => acc + row.position, 0);
-	const colPositionsTotal = gridLines.cols.reduce((acc, col) => acc + col.position, 0);
-
 	let rowPositionAccumulator = 0;
-	const rows = gridLines.rows
+	const rows = gridLines.row
 		.toSorted((a, b) => a.position - b.position)
 		.filter((row) => row.name !== gridStartLine)
 		.map((row) => {
-			const rowPosition = (row.position * 100) / rowPositionsTotal - rowPositionAccumulator;
+			const rowPosition = row.position * 100 - rowPositionAccumulator;
 			rowPositionAccumulator += rowPosition;
-			return `${rowPosition}fr [${row.name}]`;
+			return `${rowPosition}% [${row.name}]`;
 		})
 		.join(' ');
 
 	let colPositionAccumulator = 0;
-	const cols = gridLines.cols
+	const cols = gridLines.col
 		.toSorted((a, b) => a.position - b.position)
-		.filter((row) => row.name !== gridStartLine)
+		.filter((col) => col.name !== gridStartLine)
 		.map((col) => {
-			const colPosition = (col.position * 100) / colPositionsTotal - colPositionAccumulator;
+			const colPosition = col.position * 100 - colPositionAccumulator;
 			colPositionAccumulator += colPosition;
-			return `${colPosition}fr [${col.name}]`;
+			return `${colPosition}% [${col.name}]`;
 		})
 		.join(' ');
 
@@ -53,12 +53,12 @@ export function getGroupedGridLines(gridLines: EditableGridLines, cells: Editabl
 		...cell,
 		positions: {
 			row: {
-				start: getLinePosition(gridLines.rows, cell.bounds.row.start) ?? 0,
-				end: getLinePosition(gridLines.rows, cell.bounds.row.end) ?? 0,
+				start: getLinePosition(gridLines.row, cell.bounds.row.start) ?? 0,
+				end: getLinePosition(gridLines.row, cell.bounds.row.end) ?? 0,
 			},
 			col: {
-				start: getLinePosition(gridLines.cols, cell.bounds.col.start) ?? 0,
-				end: getLinePosition(gridLines.cols, cell.bounds.col.end) ?? 0,
+				start: getLinePosition(gridLines.col, cell.bounds.col.start) ?? 0,
+				end: getLinePosition(gridLines.col, cell.bounds.col.end) ?? 0,
 			},
 		},
 	}));
@@ -68,7 +68,7 @@ export function getGroupedGridLines(gridLines: EditableGridLines, cells: Editabl
 		.forEach((cell) => {
 			addOrExpandGroup({
 				groups: lineGroups.rows,
-				crossAxisLines: gridLines.cols,
+				crossAxisLines: gridLines.col,
 				line: cell.bounds.row.start,
 				crossAxisStart: cell.bounds.col.start,
 				crossAxisEnd: cell.bounds.col.end,
@@ -79,7 +79,7 @@ export function getGroupedGridLines(gridLines: EditableGridLines, cells: Editabl
 		.forEach((cell) => {
 			addOrExpandGroup({
 				groups: lineGroups.rows,
-				crossAxisLines: gridLines.cols,
+				crossAxisLines: gridLines.col,
 				line: cell.bounds.row.end,
 				crossAxisStart: cell.bounds.col.start,
 				crossAxisEnd: cell.bounds.col.end,
@@ -90,7 +90,7 @@ export function getGroupedGridLines(gridLines: EditableGridLines, cells: Editabl
 		.forEach((cell) => {
 			addOrExpandGroup({
 				groups: lineGroups.cols,
-				crossAxisLines: gridLines.rows,
+				crossAxisLines: gridLines.row,
 				line: cell.bounds.col.start,
 				crossAxisStart: cell.bounds.row.start,
 				crossAxisEnd: cell.bounds.row.end,
@@ -101,7 +101,7 @@ export function getGroupedGridLines(gridLines: EditableGridLines, cells: Editabl
 		.forEach((cell) => {
 			addOrExpandGroup({
 				groups: lineGroups.cols,
-				crossAxisLines: gridLines.rows,
+				crossAxisLines: gridLines.row,
 				line: cell.bounds.col.end,
 				crossAxisStart: cell.bounds.row.start,
 				crossAxisEnd: cell.bounds.row.end,
@@ -203,12 +203,6 @@ export function calculateRelativePosition(clientX: number, clientY: number, elem
 	return { x: relativeX, y: relativeY };
 }
 
-export function findLine(lines: EditableGridLines, name: string, direction: GridLineDirection) {
-	return lines[direction === GridLineDirection.Row ? 'rows' : 'cols'].find(
-		(line) => line.name === name,
-	);
-}
-
 export function snapLinePosition(
 	position: number,
 	lines: EditableGridLine[],
@@ -233,4 +227,122 @@ export function snapLinePosition(
 
 export function getContainerSizeInDirection(direction: GridLineDirection, element: HTMLElement) {
 	return direction === GridLineDirection.Row ? element.clientHeight : element.clientWidth;
+}
+
+export interface GetMinMaxValidLinePositionProps {
+	lineName: string;
+	direction: GridLineDirection;
+	lines: EditableGridLines;
+	cells: EditableGridCellData[];
+	gridContainer: HTMLElement;
+	minCellWidth?: number;
+	minCellHeight?: number;
+}
+export function getMinMaxValidLinePosition({
+	lineName,
+	direction,
+	lines,
+	cells,
+	gridContainer,
+	minCellWidth = gridMinCellWidth,
+	minCellHeight = gridMinCellHeight,
+}: GetMinMaxValidLinePositionProps) {
+	// find cells that use the line
+	const neighboringCells = cells.filter(
+		(cell) => cell.bounds[direction].start === lineName || cell.bounds[direction].end === lineName,
+	);
+
+	const linePosition = getLinePosition(lines[direction], lineName) ?? 0;
+	const neighboringLinesPositions = [
+		...new Set(
+			neighboringCells.map((cell) => {
+				if (cell.bounds[direction].start === lineName) {
+					return cell.bounds[direction].end;
+				}
+
+				return cell.bounds[direction].start;
+			}),
+		),
+	].map((line) => getLinePosition(lines[direction], line) ?? 0);
+
+	const { below, above } = neighboringLinesPositions.reduce(
+		(acc, neighboringLinePosition) => ({
+			below:
+				neighboringLinePosition < linePosition
+					? Math.max(neighboringLinePosition, acc.below)
+					: acc.below,
+			above:
+				neighboringLinePosition > linePosition
+					? Math.min(neighboringLinePosition, acc.above)
+					: acc.above,
+		}),
+		{ below: 0, above: 1 },
+	);
+
+	const containerSize = getContainerSizeInDirection(direction, gridContainer);
+	const relativeOffset =
+		direction === GridLineDirection.Row
+			? minCellHeight / containerSize
+			: minCellWidth / containerSize;
+
+	return {
+		min: Math.max(below + relativeOffset, 0),
+		max: Math.min(above - relativeOffset, 1),
+	};
+}
+
+export interface GetNewCellProps {
+	bounds: EditableGridCellBounds;
+	splitFrom: EditableGridCellData;
+}
+export function getNewCell({ bounds, splitFrom }: GetNewCellProps): EditableGridCellData {
+	return {
+		bounds,
+		title: `Split from ${splitFrom.title}`,
+	};
+}
+
+export interface GetNewLinePositionProps {
+	requestedPosition: number;
+	lineName: string;
+	direction: GridLineDirection;
+	lines: EditableGridLines;
+	cells: EditableGridCellData[];
+	gridContainer: HTMLElement;
+	minCellWidth?: number;
+	minCellHeight?: number;
+}
+export function getNewLinePosition({
+	requestedPosition,
+	lineName,
+	direction,
+	lines,
+	cells,
+	gridContainer,
+	minCellWidth,
+	minCellHeight,
+}: GetNewLinePositionProps) {
+	const linesMatchingDirectionExceptMovedLine = lines[direction].filter(
+		(line) => line.name !== lineName,
+	);
+
+	const snappedPosition = snapLinePosition(
+		requestedPosition,
+		linesMatchingDirectionExceptMovedLine,
+		getContainerSizeInDirection(direction, gridContainer),
+	);
+
+	const { min, max } = getMinMaxValidLinePosition({
+		lineName: lineName,
+		direction,
+		cells,
+		gridContainer,
+		lines,
+		minCellWidth,
+		minCellHeight,
+	});
+
+	const clampedPosition = Math.max(min, Math.min(max, snappedPosition));
+
+	return clampedPosition;
 }
