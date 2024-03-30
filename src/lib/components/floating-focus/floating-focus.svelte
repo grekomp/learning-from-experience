@@ -32,7 +32,8 @@
 
 		// We don't need to detect keypresses manually, instead we rely on
 		// the browser's built-in `:focus-visible` pseudo-class
-		if (document.querySelector(':focus-visible')) enable();
+		if (!document.querySelector(':focus-visible')) return;
+		enable();
 
 		const target = event.target;
 		const body = document.body;
