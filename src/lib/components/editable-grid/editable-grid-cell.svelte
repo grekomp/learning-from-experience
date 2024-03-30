@@ -13,9 +13,12 @@
 	style:grid-column-end={bounds.col.end}
 	{...$$restProps}
 	class={cn(
-		'm-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 rounded-sm border-2 border-neutral-900 bg-neutral-800',
+		'm-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 overflow-auto rounded-sm border-2 border-neutral-900 bg-neutral-800',
 		$$props.class,
 	)}
+	role="cell"
+	tabindex="0"
+	on:click
 >
 	<div class="p-4">
 		{#if title}
