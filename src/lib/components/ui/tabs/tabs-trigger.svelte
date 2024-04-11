@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils/classNames.utils.js';
+	import { cn } from '$lib/utils/shadcn.utils.js';
 	import { Tabs as TabsPrimitive } from 'bits-ui';
 
 	type $$Props = TabsPrimitive.TriggerProps;

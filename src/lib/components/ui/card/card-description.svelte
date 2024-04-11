@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils/classNames.utils';
+	import { cn } from '$lib/utils/shadcn.utils';
 	import type { HTMLAttributes } from 'svelte/elements';
 
 	type $$Props = HTMLAttributes<HTMLParagraphElement>;

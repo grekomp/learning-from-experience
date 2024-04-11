@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cn } from '$lib/utils/classNames.utils';
+	import { cn } from '$lib/utils/shadcn.utils';
 	import { Button as ButtonPrimitive } from 'bits-ui';
 	import { buttonVariants, type Events, type Props } from '.';
 
