@@ -1,31 +1,34 @@
 <script lang="ts">
-	import type { EditableGridCellBounds } from '$lib/components/editable-grid/editable-grid.model';
-	import { cn } from '$lib/utils';
+	import { type EditableGridCellData } from '$lib/components/editable-grid/editable-grid.model';
+	import { cn } from '$lib/utils/shadcn.utils';
 
-	export let bounds: EditableGridCellBounds;
-	export let title: string | undefined = undefined;
+	export let cell: EditableGridCellData;
 </script>
 
 <div
-	style:grid-row-start={bounds.row.start}
-	style:grid-row-end={bounds.row.end}
-	style:grid-column-start={bounds.col.start}
-	style:grid-column-end={bounds.col.end}
+	style:grid-row-start={cell.bounds.row.start.name}
+	style:grid-row-end={cell.bounds.row.end.name}
+	style:grid-column-start={cell.bounds.col.start.name}
+	style:grid-column-end={cell.bounds.col.end.name}
 	{...$$restProps}
 	class={cn(
-		'm-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 overflow-auto rounded-sm border-2 border-neutral-900 bg-neutral-800',
+		'group relative m-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 overflow-auto rounded-sm border-2 border-neutral-900 bg-neutral-800',
 		$$props.class,
 	)}
 	role="cell"
 	tabindex="0"
 	on:click
+	on:mousemove
 >
-	<div class="p-4">
-		{#if title}
-			<div class="text-xs text-muted-foreground">{title}</div>
-		{/if}
-		<slot />
-	</div>
+	{#if cell.title}
+		<div
+			class="absolute bottom-0 left-0 right-0 top-0 my-auto h-fit text-center text-5xl font-extrabold text-muted-foreground opacity-20"
+		>
+			{cell.title}
+		</div>
+	{/if}
+	<svelte:component this={cell.component} {cell} />
+	<slot />
 </div>
 
 <style>

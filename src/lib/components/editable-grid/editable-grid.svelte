@@ -1,126 +1,137 @@
 <script lang="ts">
+	import EditableGridCellMergeIndicator from '$lib/components/editable-grid/editable-grid-cell-merge-indicator.svelte';
+	import EditableGridCellMergeOverlay from '$lib/components/editable-grid/editable-grid-cell-merge-overlay.svelte';
 	import EditableGridCell from '$lib/components/editable-grid/editable-grid-cell.svelte';
 	import { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
 	import EditableGridLineResizeIndicator from '$lib/components/editable-grid/editable-grid-line-resize-indicator.svelte';
 	import {
-		GridLineDirection,
+		GridLineAxis,
 		type EditableGridCellData,
 	} from '$lib/components/editable-grid/editable-grid.model';
 	import {
-		getGridTemplate,
+		getCssGridTemplateFromGridLines,
 		getGroupedGridLines,
 	} from '$lib/components/editable-grid/editable-grid.utils';
+	import { Button } from '$lib/components/ui/button';
+	import ExampleGridCell from '$lib/components/ui/example-grid-cell/ExampleGridCell.svelte';
+
+	const colLines = {
+		start: {
+			name: 'start',
+			position: 0,
+		},
+		mid1: {
+			name: 'mid1',
+			position: 0.25,
+		},
+		mid2: {
+			name: 'mid2',
+			position: 0.5,
+		},
+		mid3: {
+			name: 'mid3',
+			position: 0.75,
+		},
+		end: {
+			name: 'end',
+			position: 1,
+		},
+	};
+
+	const rowLines = {
+		start: {
+			name: 'start',
+			position: 0,
+		},
+		mid1: {
+			name: 'mid1',
+			position: 0.4,
+		},
+		mid2: {
+			name: 'mid2',
+			position: 0.5,
+		},
+		mid3: {
+			name: 'mid3',
+			position: 0.7,
+		},
+		mid4: {
+			name: 'mid4',
+			position: 0.9,
+		},
+		end: {
+			name: 'end',
+			position: 1,
+		},
+	};
+
+	const initialCells: EditableGridCellData[] = [
+		{
+			bounds: {
+				row: { start: rowLines.start, end: rowLines.mid2 },
+				col: { start: colLines.start, end: colLines.mid1 },
+			},
+			title: 'Cell 1',
+			component: ExampleGridCell,
+		},
+		{
+			bounds: {
+				row: { start: rowLines.mid2, end: rowLines.mid4 },
+				col: { start: colLines.start, end: colLines.mid1 },
+			},
+			title: 'Cell 2',
+		},
+		{
+			bounds: {
+				row: { start: rowLines.mid3, end: rowLines.mid4 },
+				col: { start: colLines.mid1, end: colLines.mid3 },
+			},
+			title: 'Cell 6',
+		},
+		{
+			bounds: {
+				row: { start: rowLines.start, end: rowLines.mid3 },
+				col: { start: colLines.mid1, end: colLines.mid3 },
+			},
+			title: 'Cell 3',
+		},
+		{
+			bounds: {
+				row: { start: rowLines.start, end: rowLines.mid1 },
+				col: { start: colLines.mid3, end: colLines.end },
+			},
+			title: 'Cell 4',
+		},
+		{
+			bounds: {
+				row: { start: rowLines.mid1, end: rowLines.mid4 },
+				col: { start: colLines.mid3, end: colLines.end },
+			},
+			title: 'Cell 5',
+		},
+
+		{
+			bounds: {
+				row: { start: rowLines.mid4, end: rowLines.end },
+				col: { start: colLines.start, end: colLines.mid2 },
+			},
+			title: 'Cell 7',
+		},
+		{
+			bounds: {
+				row: { start: rowLines.mid4, end: rowLines.end },
+				col: { start: colLines.mid2, end: colLines.end },
+			},
+			title: 'Cell 8',
+		},
+	];
 
 	let grid = new EditableGridController(
 		{
-			col: [
-				{
-					name: 'start',
-					position: 0,
-				},
-				{
-					name: 'mid-1',
-					position: 0.25,
-				},
-				{
-					name: 'mid-2',
-					position: 0.5,
-				},
-				{
-					name: 'mid-3',
-					position: 0.75,
-				},
-				{
-					name: 'end',
-					position: 1,
-				},
-			],
-			row: [
-				{
-					name: 'start',
-					position: 0,
-				},
-				{
-					name: 'mid-1',
-					position: 0.4,
-				},
-				{
-					name: 'mid-2',
-					position: 0.5,
-				},
-				{
-					name: 'mid-3',
-					position: 0.7,
-				},
-				{
-					name: 'mid-4',
-					position: 0.9,
-				},
-				{
-					name: 'end',
-					position: 1,
-				},
-			],
+			col: Object.values(colLines),
+			row: Object.values(rowLines),
 		},
-		[
-			{
-				bounds: {
-					row: { start: 'start', end: 'mid-2' },
-					col: { start: 'start', end: 'mid-1' },
-				},
-				title: 'Cell 1',
-			},
-			{
-				bounds: {
-					row: { start: 'mid-3', end: 'mid-4' },
-					col: { start: 'mid-1', end: 'mid-3' },
-				},
-				title: 'Cell 6',
-			},
-			{
-				bounds: {
-					row: { start: 'mid-2', end: 'mid-4' },
-					col: { start: 'start', end: 'mid-1' },
-				},
-				title: 'Cell 2',
-			},
-			{
-				bounds: {
-					row: { start: 'start', end: 'mid-3' },
-					col: { start: 'mid-1', end: 'mid-3' },
-				},
-				title: 'Cell 3',
-			},
-			{
-				bounds: {
-					row: { start: 'start', end: 'mid-1' },
-					col: { start: 'mid-3', end: 'end' },
-				},
-				title: 'Cell 4',
-			},
-			{
-				bounds: {
-					row: { start: 'mid-1', end: 'mid-4' },
-					col: { start: 'mid-3', end: 'end' },
-				},
-				title: 'Cell 5',
-			},
-
-			{
-				bounds: {
-					row: { start: 'mid-4', end: 'end' },
-					col: { start: 'start', end: 'mid-2' },
-				},
-				title: 'Cell 7',
-			},
-			{
-				bounds: {
-					row: { start: 'mid-4', end: 'end' },
-					col: { start: 'mid-2', end: 'end' },
-				},
-				title: 'Cell 8',
-			},
-		],
+		initialCells,
 	);
 
 	let lines = grid.lines;
@@ -128,39 +139,57 @@
 
 	$: groupedLines = getGroupedGridLines($lines, $cells);
 
-	function tmpclick(event: MouseEvent, cell: EditableGridCellData) {
-		if (event.ctrlKey) {
-			grid.splitCell(cell, GridLineDirection.Row);
-		} else {
-			grid.splitCell(cell, GridLineDirection.Col);
-		}
-	}
+	let mergeSource: EditableGridCellData | undefined;
+	let mergeTarget: EditableGridCellData | undefined;
+
+	$: canMerge = mergeSource && mergeTarget && grid.canMergeCells(mergeSource, mergeTarget);
 </script>
 
 <svelte:body on:mouseup={grid.handleDragEnd} on:mousemove={grid.handleDragLine} />
 
+<Button
+	on:click={() => {
+		if (mergeSource && mergeTarget) grid.mergeCells(mergeSource, mergeTarget);
+	}}>Merge</Button
+>
+
 <div
 	class="grid h-full w-full [--grid-gap:2px]"
-	style:grid-template={getGridTemplate($lines)}
+	style:grid-template={getCssGridTemplateFromGridLines($lines)}
 	bind:this={grid.gridContainer}
 >
+	{#if mergeSource && mergeTarget && canMerge}
+		<EditableGridCellMergeOverlay fromCell={mergeSource} toCell={mergeTarget} {grid} />
+	{/if}
+
 	{#each $cells as cell}
-		<EditableGridCell
-			bounds={cell.bounds}
-			title={cell.title}
-			on:click={(event) => tmpclick(event, cell)}
-		/>
+		<EditableGridCell {cell}>
+			<!-- <Button size={'sm'} on:click={() => (mergeSource = cell)}>Merge from</Button>
+			<Button
+				size={'sm'}
+				on:click={() => {
+					mergeTarget = cell;
+				}}>Merge to</Button
+			>
+			<Button size={'sm'} on:click={() => grid.splitCell(cell, GridLineAxis.Col)}
+				>Split Vertically</Button
+			>
+			<Button size={'sm'} on:click={() => grid.splitCell(cell, GridLineAxis.Row)}
+				>Split Horizontally</Button
+			> -->
+			<EditableGridCellMergeIndicator />
+		</EditableGridCell>
 	{/each}
 
 	{#each groupedLines.cols as line}
 		{#key line.name + 'col'}
-			<EditableGridLineResizeIndicator {line} direction={GridLineDirection.Col} {grid} />
+			<EditableGridLineResizeIndicator {line} axis={GridLineAxis.Col} {grid} />
 		{/key}
 	{/each}
 
 	{#each groupedLines.rows as line}
 		{#key line.name + 'row'}
-			<EditableGridLineResizeIndicator {line} direction={GridLineDirection.Row} {grid} />
+			<EditableGridLineResizeIndicator {line} axis={GridLineAxis.Row} {grid} />
 		{/key}
 	{/each}
 </div>

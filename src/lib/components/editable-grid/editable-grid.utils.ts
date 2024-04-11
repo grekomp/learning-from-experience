@@ -1,5 +1,5 @@
 import {
-	GridLineDirection,
+	GridLineAxis,
 	gridEndLine,
 	gridLineSnapDistance,
 	gridMinCellHeight,
@@ -12,8 +12,9 @@ import {
 	type EditableGridLines,
 	type GridLineGroup,
 } from '$lib/components/editable-grid/editable-grid.model';
+import { isDefined } from '$lib/utils/filter.utils';
 
-export function getGridTemplate(gridLines: EditableGridLines): string {
+export function getCssGridTemplateFromGridLines(gridLines: EditableGridLines): string {
 	let rowPositionAccumulator = 0;
 	const rows = gridLines.row
 		.toSorted((a, b) => a.position - b.position)
@@ -39,70 +40,48 @@ export function getGridTemplate(gridLines: EditableGridLines): string {
 	return `[${gridStartLine}] ${rows} / [${gridStartLine}] ${cols}`;
 }
 
-function getLinePosition(lines: EditableGridLine[], line: string) {
-	return lines.find((linesEl) => linesEl.name === line)?.position;
-}
-
 export function getGroupedGridLines(gridLines: EditableGridLines, cells: EditableGridCellData[]) {
 	const lineGroups: EditableGridLineGroups = {
 		rows: [],
 		cols: [],
 	};
 
-	const cellsWithBoundsPositions = cells.map((cell) => ({
-		...cell,
-		positions: {
-			row: {
-				start: getLinePosition(gridLines.row, cell.bounds.row.start) ?? 0,
-				end: getLinePosition(gridLines.row, cell.bounds.row.end) ?? 0,
-			},
-			col: {
-				start: getLinePosition(gridLines.col, cell.bounds.col.start) ?? 0,
-				end: getLinePosition(gridLines.col, cell.bounds.col.end) ?? 0,
-			},
-		},
-	}));
-
-	cellsWithBoundsPositions
-		.toSorted((a, b) => a.positions.row.start - b.positions.row.start)
+	cells
+		.toSorted((a, b) => a.bounds.row.start.position - b.bounds.row.start.position)
 		.forEach((cell) => {
 			addOrExpandGroup({
 				groups: lineGroups.rows,
-				crossAxisLines: gridLines.col,
-				line: cell.bounds.row.start,
+				line: cell.bounds.row.start.name,
 				crossAxisStart: cell.bounds.col.start,
 				crossAxisEnd: cell.bounds.col.end,
 			});
 		});
-	cellsWithBoundsPositions
-		.toSorted((a, b) => a.positions.row.end - b.positions.row.end)
+	cells
+		.toSorted((a, b) => a.bounds.row.end.position - b.bounds.row.end.position)
 		.forEach((cell) => {
 			addOrExpandGroup({
 				groups: lineGroups.rows,
-				crossAxisLines: gridLines.col,
-				line: cell.bounds.row.end,
+				line: cell.bounds.row.end.name,
 				crossAxisStart: cell.bounds.col.start,
 				crossAxisEnd: cell.bounds.col.end,
 			});
 		});
-	cellsWithBoundsPositions
-		.toSorted((a, b) => a.positions.col.start - b.positions.col.start)
+	cells
+		.toSorted((a, b) => a.bounds.col.start.position - b.bounds.col.start.position)
 		.forEach((cell) => {
 			addOrExpandGroup({
 				groups: lineGroups.cols,
-				crossAxisLines: gridLines.row,
-				line: cell.bounds.col.start,
+				line: cell.bounds.col.start.name,
 				crossAxisStart: cell.bounds.row.start,
 				crossAxisEnd: cell.bounds.row.end,
 			});
 		});
-	cellsWithBoundsPositions
-		.toSorted((a, b) => a.positions.col.end - b.positions.col.end)
+	cells
+		.toSorted((a, b) => a.bounds.col.end.position - b.bounds.col.end.position)
 		.forEach((cell) => {
 			addOrExpandGroup({
 				groups: lineGroups.cols,
-				crossAxisLines: gridLines.row,
-				line: cell.bounds.col.end,
+				line: cell.bounds.col.end.name,
 				crossAxisStart: cell.bounds.row.start,
 				crossAxisEnd: cell.bounds.row.end,
 			});
@@ -120,14 +99,12 @@ export function getGroupedGridLines(gridLines: EditableGridLines, cells: Editabl
 
 export interface AddOrExpandGroupProps {
 	groups: GridLineGroup[];
-	crossAxisLines: EditableGridLine[];
 	line: string;
-	crossAxisStart: string;
-	crossAxisEnd: string;
+	crossAxisStart: EditableGridLine;
+	crossAxisEnd: EditableGridLine;
 }
 export function addOrExpandGroup({
 	groups,
-	crossAxisLines,
 	line,
 	crossAxisStart,
 	crossAxisEnd,
@@ -143,37 +120,28 @@ export function addOrExpandGroup({
 		return;
 	}
 
-	const crossAxisStartPosition = getLinePosition(crossAxisLines, crossAxisStart) ?? 0;
-	const crossAxisEndPosition = getLinePosition(crossAxisLines, crossAxisEnd) ?? 1;
-
 	// Check if an overlapping group already exists
 	if (
-		matchingGroups.some((group) => {
-			const groupStartPosition = getLinePosition(crossAxisLines, group.start) ?? 0;
-			const groupEndPosition = getLinePosition(crossAxisLines, group.end) ?? 1;
-
-			return (
-				groupStartPosition <= crossAxisStartPosition && groupEndPosition >= crossAxisEndPosition
-			);
-		})
+		matchingGroups.some(
+			(group) =>
+				group.start.position <= crossAxisStart.position &&
+				group.end.position >= crossAxisEnd.position,
+		)
 	)
 		return;
 
 	const expandedGroup = matchingGroups.some((group) => {
-		const groupStartPosition = getLinePosition(crossAxisLines, group.start) ?? 0;
-		const groupEndPosition = getLinePosition(crossAxisLines, group.end) ?? 1;
-
 		let expandedGroup = false;
 		if (
-			(group.start === crossAxisEnd || groupStartPosition < crossAxisEndPosition) &&
-			groupStartPosition > crossAxisStartPosition
+			(group.start === crossAxisEnd || group.start.position < crossAxisEnd.position) &&
+			group.start.position > crossAxisStart.position
 		) {
 			group.start = crossAxisStart;
 			expandedGroup = true;
 		}
 		if (
-			(group.end === crossAxisStart || groupEndPosition > crossAxisStartPosition) &&
-			groupEndPosition < crossAxisEndPosition
+			(group.end === crossAxisStart || group.end.position > crossAxisStart.position) &&
+			group.end.position < crossAxisEnd.position
 		) {
 			group.end = crossAxisEnd;
 			expandedGroup = true;
@@ -225,13 +193,13 @@ export function snapLinePosition(
 	return position;
 }
 
-export function getContainerSizeInDirection(direction: GridLineDirection, element: HTMLElement) {
-	return direction === GridLineDirection.Row ? element.clientHeight : element.clientWidth;
+export function getContainerSizeInAxis(axis: GridLineAxis, element: HTMLElement) {
+	return axis === GridLineAxis.Row ? element.clientHeight : element.clientWidth;
 }
 
 export interface GetMinMaxValidLinePositionProps {
-	lineName: string;
-	direction: GridLineDirection;
+	line: EditableGridLine;
+	axis: GridLineAxis;
 	lines: EditableGridLines;
 	cells: EditableGridCellData[];
 	gridContainer: HTMLElement;
@@ -239,9 +207,8 @@ export interface GetMinMaxValidLinePositionProps {
 	minCellHeight?: number;
 }
 export function getMinMaxValidLinePosition({
-	lineName,
-	direction,
-	lines,
+	line,
+	axis,
 	cells,
 	gridContainer,
 	minCellWidth = gridMinCellWidth,
@@ -249,21 +216,21 @@ export function getMinMaxValidLinePosition({
 }: GetMinMaxValidLinePositionProps) {
 	// find cells that use the line
 	const neighboringCells = cells.filter(
-		(cell) => cell.bounds[direction].start === lineName || cell.bounds[direction].end === lineName,
+		(cell) => cell.bounds[axis].start === line || cell.bounds[axis].end === line,
 	);
 
-	const linePosition = getLinePosition(lines[direction], lineName) ?? 0;
+	const linePosition = line.position;
 	const neighboringLinesPositions = [
 		...new Set(
 			neighboringCells.map((cell) => {
-				if (cell.bounds[direction].start === lineName) {
-					return cell.bounds[direction].end;
+				if (cell.bounds[axis].start === line) {
+					return cell.bounds[axis].end;
 				}
 
-				return cell.bounds[direction].start;
+				return cell.bounds[axis].start;
 			}),
 		),
-	].map((line) => getLinePosition(lines[direction], line) ?? 0);
+	].map((line) => line.position);
 
 	const { below, above } = neighboringLinesPositions.reduce(
 		(acc, neighboringLinePosition) => ({
@@ -279,11 +246,9 @@ export function getMinMaxValidLinePosition({
 		{ below: 0, above: 1 },
 	);
 
-	const containerSize = getContainerSizeInDirection(direction, gridContainer);
+	const containerSize = getContainerSizeInAxis(axis, gridContainer);
 	const relativeOffset =
-		direction === GridLineDirection.Row
-			? minCellHeight / containerSize
-			: minCellWidth / containerSize;
+		axis === GridLineAxis.Row ? minCellHeight / containerSize : minCellWidth / containerSize;
 
 	return {
 		min: Math.max(below + relativeOffset, 0),
@@ -304,8 +269,8 @@ export function getNewCell({ bounds, splitFrom }: GetNewCellProps): EditableGrid
 
 export interface GetNewLinePositionProps {
 	requestedPosition: number;
-	lineName: string;
-	direction: GridLineDirection;
+	line: EditableGridLine;
+	axis: GridLineAxis;
 	lines: EditableGridLines;
 	cells: EditableGridCellData[];
 	gridContainer: HTMLElement;
@@ -314,27 +279,27 @@ export interface GetNewLinePositionProps {
 }
 export function getNewLinePosition({
 	requestedPosition,
-	lineName,
-	direction,
+	line,
+	axis,
 	lines,
 	cells,
 	gridContainer,
 	minCellWidth,
 	minCellHeight,
 }: GetNewLinePositionProps) {
-	const linesMatchingDirectionExceptMovedLine = lines[direction].filter(
-		(line) => line.name !== lineName,
+	const linesMatchingAxisExceptMovedLine = lines[axis].filter(
+		(otherLine) => otherLine.name !== line.name,
 	);
 
 	const snappedPosition = snapLinePosition(
 		requestedPosition,
-		linesMatchingDirectionExceptMovedLine,
-		getContainerSizeInDirection(direction, gridContainer),
+		linesMatchingAxisExceptMovedLine,
+		getContainerSizeInAxis(axis, gridContainer),
 	);
 
 	const { min, max } = getMinMaxValidLinePosition({
-		lineName: lineName,
-		direction,
+		line,
+		axis,
 		cells,
 		gridContainer,
 		lines,
@@ -345,4 +310,70 @@ export function getNewLinePosition({
 	const clampedPosition = Math.max(min, Math.min(max, snappedPosition));
 
 	return clampedPosition;
+}
+
+export function invertAxis(axis: GridLineAxis) {
+	return axis === GridLineAxis.Row ? GridLineAxis.Col : GridLineAxis.Row;
+}
+
+export function getOuterBounds(
+	bounds: EditableGridCellBounds[],
+	lines: EditableGridLines,
+): EditableGridCellBounds {
+	const rowLines = bounds
+		.flatMap((boundsEntry) =>
+			lines.row.filter((line) => line === boundsEntry.row.start || line === boundsEntry.row.end),
+		)
+		.filter(isDefined);
+
+	const rowStart = rowLines.reduce(
+		(acc, line) => {
+			if (line.position > acc.position) return acc;
+
+			return line;
+		},
+		{ name: gridEndLine, position: 1 },
+	);
+	const rowEnd = rowLines.reduce(
+		(acc, line) => {
+			if (line.position < acc.position) return acc;
+
+			return line;
+		},
+		{ name: gridStartLine, position: 0 },
+	);
+
+	const colLines = bounds
+		.flatMap((boundsEntry) =>
+			lines.col.filter((line) => line === boundsEntry.col.start || line === boundsEntry.col.end),
+		)
+		.filter(isDefined);
+
+	const colStart = colLines.reduce(
+		(acc, line) => {
+			if (line.position > acc.position) return acc;
+
+			return line;
+		},
+		{ name: gridEndLine, position: 1 },
+	);
+	const colEnd = colLines.reduce(
+		(acc, line) => {
+			if (line.position < acc.position) return acc;
+
+			return line;
+		},
+		{ name: gridStartLine, position: 0 },
+	);
+
+	return {
+		row: {
+			start: rowStart,
+			end: rowEnd,
+		},
+		col: {
+			start: colStart,
+			end: colEnd,
+		},
+	};
 }

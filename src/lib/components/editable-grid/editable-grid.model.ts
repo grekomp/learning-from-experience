@@ -1,3 +1,5 @@
+import type { ComponentType } from 'svelte';
+
 export const gridStartLine = 'start' as const;
 export const gridEndLine = 'end' as const;
 export const gridLineSnapDistance = 10;
@@ -13,13 +15,14 @@ export interface EditableGridCellBounds {
 }
 
 export interface EditableGridCellBoundsAxis {
-	start: string;
-	end: string;
+	start: EditableGridLine;
+	end: EditableGridLine;
 }
 
 export interface EditableGridCellData {
 	bounds: EditableGridCellBounds;
 	title?: string;
+	component?: ComponentType;
 }
 
 export interface EditableGridLine {
@@ -45,21 +48,21 @@ export interface GridLineGroup {
 	/**
 	 * The cross axis grid line that the group starts at.
 	 */
-	start: string;
+	start: EditableGridLine;
 	/**
 	 * The cross axis grid line that the group ends at.
 	 */
-	end: string;
+	end: EditableGridLine;
 }
 
-export enum GridLineDirection {
+export enum GridLineAxis {
 	Row = 'row',
 	Col = 'col',
 }
 
 export interface DraggedLine {
 	line: EditableGridLine;
-	direction: GridLineDirection;
+	axis: GridLineAxis;
 	startX: number;
 	startY: number;
 }
