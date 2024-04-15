@@ -1,8 +1,26 @@
 <script lang="ts">
-	import { type EditableGridCellData } from '$lib/components/editable-grid/editable-grid.model';
+	import {
+		gridInteractionStackContext,
+		type EditableGridCellData,
+	} from '$lib/components/editable-grid/editable-grid.model';
+	import {
+		EditableGridCellMergeDragInteraction,
+		editableGridCellMergeDragInteractionType,
+	} from '$lib/components/editable-grid/interactions/cell-merge-drag.interaction';
+	import { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
 	import { cn } from '$lib/utils/shadcn.utils';
+	import { getContext } from 'svelte';
 
 	export let cell: EditableGridCellData;
+
+	let interactionStack = getContext<InteractionStack>(gridInteractionStackContext);
+
+	const handleMouseEnter = () => {
+		const interaction = interactionStack.getByType<EditableGridCellMergeDragInteraction>(
+			editableGridCellMergeDragInteractionType,
+		);
+		interaction?.setTargetCell(cell);
+	};
 </script>
 
 <div
@@ -19,6 +37,7 @@
 	tabindex="0"
 	on:click
 	on:mousemove
+	on:mouseenter={handleMouseEnter}
 >
 	{#if cell.title}
 		<div
