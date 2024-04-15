@@ -6,6 +6,8 @@
 	import EditableGridLineResizeIndicator from '$lib/components/editable-grid/editable-grid-line-resize-indicator.svelte';
 	import {
 		GridLineAxis,
+		gridContext,
+		gridInteractionStackContext,
 		type EditableGridCellData,
 	} from '$lib/components/editable-grid/editable-grid.model';
 	import {
@@ -14,6 +16,13 @@
 	} from '$lib/components/editable-grid/editable-grid.utils';
 	import { Button } from '$lib/components/ui/button';
 	import ExampleGridCell from '$lib/components/ui/example-grid-cell/ExampleGridCell.svelte';
+	import '$lib/modules/interaction-stack/interaction-stack';
+	import { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
+	import InteractionStackDebug from '$lib/modules/interaction-stack/interaction-stack-debug.svelte';
+	import { setContext } from 'svelte';
+
+	const interactionStack = new InteractionStack();
+	setContext(gridInteractionStackContext, interactionStack);
 
 	const colLines = {
 		start: {
@@ -133,6 +142,7 @@
 		},
 		initialCells,
 	);
+	setContext(gridContext, grid);
 
 	let lines = grid.lines;
 	let cells = grid.cells;
@@ -152,6 +162,8 @@
 		if (mergeSource && mergeTarget) grid.mergeCells(mergeSource, mergeTarget);
 	}}>Merge</Button
 >
+
+<InteractionStackDebug {interactionStack} />
 
 <div
 	class="grid h-full w-full [--grid-gap:2px]"
@@ -177,7 +189,7 @@
 			<Button size={'sm'} on:click={() => grid.splitCell(cell, GridLineAxis.Row)}
 				>Split Horizontally</Button
 			> -->
-			<EditableGridCellMergeIndicator />
+			<EditableGridCellMergeIndicator {cell} />
 		</EditableGridCell>
 	{/each}
 
