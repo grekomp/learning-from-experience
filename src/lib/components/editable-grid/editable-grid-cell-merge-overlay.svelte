@@ -1,24 +1,37 @@
 <script lang="ts">
-	import type { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
-	import type { EditableGridCellData } from '$lib/components/editable-grid/editable-grid.model';
-	import { getOuterBounds } from '$lib/components/editable-grid/editable-grid.utils';
+	import { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
+	import {
+		gridContext,
+		gridInteractionStackContext,
+	} from '$lib/components/editable-grid/editable-grid.model';
+	import {
+		EditableGridCellMergeDragInteraction,
+		editableGridCellMergeDragInteractionType,
+	} from '$lib/components/editable-grid/interactions/cell-merge-drag.interaction';
+	import type { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
+	import { getContext } from 'svelte';
 
-	export let fromCell: EditableGridCellData;
-	export let toCell: EditableGridCellData;
-	export let grid: EditableGridController;
+	const grid = getContext<EditableGridController>(gridContext);
+	const interactionStack = getContext<InteractionStack>(gridInteractionStackContext);
 
-	let lines = grid.lines;
-	$: bounds = getOuterBounds([fromCell.bounds, toCell.bounds], $lines);
-	$: canMerge = grid.canMergeCells(fromCell, toCell);
-	$: mergeAxis = grid.findValidCellsMergeAxis(fromCell, toCell);
+	$: interaction = $interactionStack.getByType<EditableGridCellMergeDragInteraction>(
+		editableGridCellMergeDragInteractionType,
+	);
+	$: fromCell = interaction?.data.fromCell;
+	$: toCell = interaction?.data.toCell;
+
+	$: canMerge = fromCell && toCell ? grid.canMergeCells(fromCell, toCell) : false;
+	$: mergeAxis = fromCell && toCell ? grid.findValidCellsMergeAxis(fromCell, toCell) : null;
 </script>
 
-<div
-	style:grid-row-start={bounds.row.start.name}
-	style:grid-row-end={bounds.row.end.name}
-	style:grid-column-start={bounds.col.start.name}
-	style:grid-column-end={bounds.col.end.name}
-	class="z-40 bg-neutral-900 opacity-80"
->
-	{mergeAxis}
-</div>
+{#if canMerge && toCell}
+	<div
+		style:grid-row-start={toCell.bounds.row.start.name}
+		style:grid-row-end={toCell.bounds.row.end.name}
+		style:grid-column-start={toCell.bounds.col.start.name}
+		style:grid-column-end={toCell.bounds.col.end.name}
+		class="pointer-events-none z-40 bg-neutral-900 opacity-80"
+	>
+		{mergeAxis}
+	</div>
+{/if}

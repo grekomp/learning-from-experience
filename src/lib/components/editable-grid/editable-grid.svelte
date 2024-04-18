@@ -14,7 +14,6 @@
 		getCssGridTemplateFromGridLines,
 		getGroupedGridLines,
 	} from '$lib/components/editable-grid/editable-grid.utils';
-	import { Button } from '$lib/components/ui/button';
 	import ExampleGridCell from '$lib/components/ui/example-grid-cell/ExampleGridCell.svelte';
 	import '$lib/modules/interaction-stack/interaction-stack';
 	import { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
@@ -148,31 +147,18 @@
 	let cells = grid.cells;
 
 	$: groupedLines = getGroupedGridLines($lines, $cells);
-
-	let mergeSource: EditableGridCellData | undefined;
-	let mergeTarget: EditableGridCellData | undefined;
-
-	$: canMerge = mergeSource && mergeTarget && grid.canMergeCells(mergeSource, mergeTarget);
 </script>
 
 <svelte:body on:mouseup={grid.handleDragEnd} on:mousemove={grid.handleDragLine} />
 
-<Button
-	on:click={() => {
-		if (mergeSource && mergeTarget) grid.mergeCells(mergeSource, mergeTarget);
-	}}>Merge</Button
->
-
 <InteractionStackDebug {interactionStack} />
 
 <div
-	class="grid h-full w-full [--grid-gap:2px]"
+	class="grid h-full w-full [--grid-gap:4px]"
 	style:grid-template={getCssGridTemplateFromGridLines($lines)}
 	bind:this={grid.gridContainer}
 >
-	{#if mergeSource && mergeTarget && canMerge}
-		<EditableGridCellMergeOverlay fromCell={mergeSource} toCell={mergeTarget} {grid} />
-	{/if}
+	<EditableGridCellMergeOverlay />
 
 	{#each $cells as cell}
 		<EditableGridCell {cell}>
