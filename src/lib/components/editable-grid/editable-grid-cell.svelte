@@ -1,25 +1,24 @@
 <script lang="ts">
 	import {
-		gridInteractionStackContext,
-		type EditableGridCellData,
-	} from '$lib/components/editable-grid/editable-grid.model';
-	import {
-		EditableGridCellMergeDragInteraction,
-		editableGridCellMergeDragInteractionType,
-	} from '$lib/components/editable-grid/interactions/cell-merge-drag.interaction';
-	import { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
+		EditableGridCellEvents,
+		dispatchGridCellEvent,
+	} from '$lib/components/editable-grid/dom-events/editable-grid-cell-events';
+	import { type EditableGridCellData } from '$lib/components/editable-grid/editable-grid.model';
 	import { cn } from '$lib/utils/shadcn.utils';
-	import { getContext } from 'svelte';
 
 	export let cell: EditableGridCellData;
 
-	let interactionStack = getContext<InteractionStack>(gridInteractionStackContext);
-
-	const handleMouseEnter = () => {
-		const interaction = interactionStack.getByType<EditableGridCellMergeDragInteraction>(
-			editableGridCellMergeDragInteractionType,
-		);
-		interaction?.setTargetCell(cell);
+	const handleMouseEnter = (event: MouseEvent) => {
+		dispatchGridCellEvent(EditableGridCellEvents.MouseEnter, { cell, originalEvent: event });
+	};
+	const handleMouseMove = (event: MouseEvent) => {
+		dispatchGridCellEvent(EditableGridCellEvents.MouseMove, { cell, originalEvent: event });
+	};
+	const handleClick = (event: MouseEvent) => {
+		dispatchGridCellEvent(EditableGridCellEvents.Click, { cell, originalEvent: event });
+	};
+	const handleMouseLeave = (event: MouseEvent) => {
+		dispatchGridCellEvent(EditableGridCellEvents.MouseLeave, { cell, originalEvent: event });
 	};
 </script>
 
@@ -30,14 +29,15 @@
 	style:grid-column-end={cell.bounds.col.end.name}
 	{...$$restProps}
 	class={cn(
-		'group relative m-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 overflow-auto rounded-sm border-2 border-neutral-900 bg-neutral-800',
+		'group relative m-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 overflow-auto rounded-sm bg-neutral-800',
 		$$props.class,
 	)}
 	role="cell"
 	tabindex="0"
-	on:click
-	on:mousemove
+	on:click={handleClick}
+	on:mousemove={handleMouseMove}
 	on:mouseenter={handleMouseEnter}
+	on:mouseleave={handleMouseLeave}
 >
 	{#if cell.title}
 		<div
