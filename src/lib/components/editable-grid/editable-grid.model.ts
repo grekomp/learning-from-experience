@@ -1,5 +1,5 @@
 import type { EditableGridCellMouseEventData } from '$lib/components/editable-grid/events/editable-grid-cell-events';
-import { defineEvent, defineEventDictionary } from '$lib/modules/event-emitter/event-descriptors';
+import { defineEvent, defineEventDictionary } from '@grekomp/wonder-event-emitter';
 import type { ComponentType } from 'svelte';
 
 export const gridContext = 'editableGridContext' as const;
