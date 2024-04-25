@@ -1,16 +1,22 @@
-import type { EventDictionary, EventHandler } from '$lib/modules/event-emitter/event-emitter.model';
+import {
+	eventIdKey,
+	type EventDescriptor,
+} from '$lib/modules/event-emitter/event-descriptors.model';
+import type { EventHandler } from '$lib/modules/event-emitter/event-emitter.model';
 
-export class EventEmitter<EventDict extends EventDictionary, EventName extends keyof EventDict> {
-	private callbacks: Partial<Record<EventName, EventHandler<EventDict, EventName>[]>> = {};
+export class EventEmitter {
+	private callbacks: Partial<Record<string, EventHandler<never>[]>> = {};
 
-	on(name: EventName, callback: EventHandler<EventDict, EventName>) {
-		this.callbacks[name] ??= [];
-		if (this.callbacks[name]?.includes(callback)) return;
+	on<DataType extends object>(event: EventDescriptor<DataType>, callback: EventHandler<DataType>) {
+		const eventId = event[eventIdKey];
+		this.callbacks[eventId] ??= [];
+		if (this.callbacks[eventId]?.includes(callback)) return;
 
-		this.callbacks[name]?.push(callback);
+		this.callbacks[eventId]?.push(callback);
 	}
-	off(name: EventName, callback: EventHandler<EventDict, EventName>) {
-		const callbacksForEvent = this.callbacks[name];
+	off<DataType extends object>(event: EventDescriptor<DataType>, callback: EventHandler<DataType>) {
+		const eventId = event[eventIdKey];
+		const callbacksForEvent = this.callbacks[eventId];
 		if (!callbacksForEvent) return;
 
 		const index = callbacksForEvent.indexOf(callback);
@@ -18,7 +24,8 @@ export class EventEmitter<EventDict extends EventDictionary, EventName extends k
 
 		callbacksForEvent.splice(index, 1);
 	}
-	emit(name: EventName, data: EventDict[EventName]) {
-		this.callbacks[name]?.forEach((callback) => callback(data));
+	emit<DataType extends object>(event: EventDescriptor<DataType>, data: DataType) {
+		const eventId = event[eventIdKey];
+		this.callbacks[eventId]?.forEach((callback) => (callback as EventHandler<DataType>)(data));
 	}
 }

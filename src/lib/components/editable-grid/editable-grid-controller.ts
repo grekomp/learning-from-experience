@@ -14,6 +14,7 @@ import {
 	getNewLinePosition,
 	invertAxis,
 } from '$lib/components/editable-grid/editable-grid.utils';
+import type { EventEmitter } from '$lib/modules/event-emitter/event-emitter';
 import { writable, type Writable } from 'svelte/store';
 
 export class EditableGridController {
@@ -27,13 +28,15 @@ export class EditableGridController {
 	draggedLine: Writable<DraggedLine | undefined> = writable(undefined);
 
 	gridContainer?: HTMLElement;
+	eventEmitter: EventEmitter;
 
-	constructor(lines: EditableGridLines, cells: EditableGridCellData[]) {
+	constructor(lines: EditableGridLines, cells: EditableGridCellData[], eventEmitter: EventEmitter) {
 		this.__lines = lines;
 		this.__cells = cells;
 
 		this.lines = writable(lines);
 		this.cells = writable(cells);
+		this.eventEmitter = eventEmitter;
 
 		this.handleDragStart = this.handleDragStart.bind(this);
 		this.handleDragLine = this.handleDragLine.bind(this);

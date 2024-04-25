@@ -15,6 +15,7 @@
 		getGroupedGridLines,
 	} from '$lib/components/editable-grid/editable-grid.utils';
 	import ExampleGridCell from '$lib/components/ui/example-grid-cell/ExampleGridCell.svelte';
+	import { EventEmitter } from '$lib/modules/event-emitter/event-emitter';
 	import '$lib/modules/interaction-stack/interaction-stack';
 	import { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
 	import InteractionStackDebug from '$lib/modules/interaction-stack/interaction-stack-debug.svelte';
@@ -134,12 +135,14 @@
 		},
 	];
 
+	const eventEmitter = new EventEmitter();
 	let grid = new EditableGridController(
 		{
 			col: Object.values(colLines),
 			row: Object.values(rowLines),
 		},
 		initialCells,
+		eventEmitter,
 	);
 	setContext(gridContext, grid);
 

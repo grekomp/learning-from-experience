@@ -1,24 +1,27 @@
 <script lang="ts">
+	import type { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
 	import {
-		EditableGridCellEvents,
-		dispatchGridCellEvent,
-	} from '$lib/components/editable-grid/dom-events/editable-grid-cell-events';
-	import { type EditableGridCellData } from '$lib/components/editable-grid/editable-grid.model';
+		gridContext,
+		gridEvents,
+		type EditableGridCellData,
+	} from '$lib/components/editable-grid/editable-grid.model';
 	import { cn } from '$lib/utils/shadcn.utils';
+	import { getContext } from 'svelte';
 
 	export let cell: EditableGridCellData;
+	const grid = getContext<EditableGridController>(gridContext);
 
 	const handleMouseEnter = (event: MouseEvent) => {
-		dispatchGridCellEvent(EditableGridCellEvents.MouseEnter, { cell, originalEvent: event });
+		grid.eventEmitter.emit(gridEvents.cell.mouseEnter, { cell, originalEvent: event });
 	};
 	const handleMouseMove = (event: MouseEvent) => {
-		dispatchGridCellEvent(EditableGridCellEvents.MouseMove, { cell, originalEvent: event });
+		grid.eventEmitter.emit(gridEvents.cell.mouseMove, { cell, originalEvent: event });
 	};
 	const handleClick = (event: MouseEvent) => {
-		dispatchGridCellEvent(EditableGridCellEvents.Click, { cell, originalEvent: event });
+		grid.eventEmitter.emit(gridEvents.cell.click, { cell, originalEvent: event });
 	};
 	const handleMouseLeave = (event: MouseEvent) => {
-		dispatchGridCellEvent(EditableGridCellEvents.MouseLeave, { cell, originalEvent: event });
+		grid.eventEmitter.emit(gridEvents.cell.mouseLeave, { cell, originalEvent: event });
 	};
 </script>
 

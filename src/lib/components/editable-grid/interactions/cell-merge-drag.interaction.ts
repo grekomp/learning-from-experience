@@ -1,9 +1,9 @@
-import {
-	EditableGridCellEvents,
-	isGridCellEventOfType,
-} from '$lib/components/editable-grid/dom-events/editable-grid-cell-events';
 import type { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
-import type { EditableGridCellData } from '$lib/components/editable-grid/editable-grid.model';
+import {
+	gridEvents,
+	type EditableGridCellData,
+} from '$lib/components/editable-grid/editable-grid.model';
+import type { DataTypeOf } from '$lib/modules/event-emitter/event-descriptors.model';
 import { InteractionBase } from '$lib/modules/interaction-stack/interaction-base';
 import type { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
 
@@ -38,8 +38,8 @@ export class EditableGridCellMergeDragInteraction extends InteractionBase<
 	}
 
 	_onStart() {
-		document.addEventListener(EditableGridCellEvents.MouseEnter, this.onCellMouseEnter);
-		document.addEventListener(EditableGridCellEvents.Click, this.onCellClick);
+		this.data.grid.eventEmitter.on(gridEvents.cell.mouseEnter, this.onCellMouseEnter);
+		this.data.grid.eventEmitter.on(gridEvents.cell.click, this.onCellClick);
 	}
 	_onComplete() {
 		if (this.data.fromCell && this.data.toCell) {
@@ -47,24 +47,14 @@ export class EditableGridCellMergeDragInteraction extends InteractionBase<
 		}
 	}
 	_onDispose() {
-		document.removeEventListener(EditableGridCellEvents.MouseEnter, this.onCellMouseEnter);
-		document.removeEventListener(EditableGridCellEvents.Click, this.onCellClick);
+		this.data.grid.eventEmitter.off(gridEvents.cell.mouseEnter, this.onCellMouseEnter);
+		this.data.grid.eventEmitter.off(gridEvents.cell.click, this.onCellClick);
 	}
 
-	onCellMouseEnter(event: Event) {
-		if (!isGridCellEventOfType(event, EditableGridCellEvents.MouseEnter)) return;
-
-		event.preventDefault();
-		event.stopPropagation();
-
-		this.setTargetCell(event.detail.cell);
+	onCellMouseEnter({ cell }: DataTypeOf<typeof gridEvents.cell.mouseEnter>) {
+		this.setTargetCell(cell);
 	}
-	onCellClick(event: Event) {
-		if (!isGridCellEventOfType(event, EditableGridCellEvents.Click)) return;
-
-		event.preventDefault();
-		event.stopPropagation();
-
+	onCellClick() {
 		this.complete();
 	}
 }

@@ -1,3 +1,5 @@
+import type { EditableGridCellMouseEventData } from '$lib/components/editable-grid/events/editable-grid-cell-events';
+import { defineEvent, defineEventDictionary } from '$lib/modules/event-emitter/event-descriptors';
 import type { ComponentType } from 'svelte';
 
 export const gridContext = 'editableGridContext' as const;
@@ -69,3 +71,12 @@ export interface DraggedLine {
 	startX: number;
 	startY: number;
 }
+
+export const gridEvents = defineEventDictionary({
+	cell: {
+		click: defineEvent<EditableGridCellMouseEventData>(),
+		mouseEnter: defineEvent<EditableGridCellMouseEventData>(),
+		mouseMove: defineEvent<EditableGridCellMouseEventData>(),
+		mouseLeave: defineEvent<EditableGridCellMouseEventData>(),
+	},
+});
