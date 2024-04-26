@@ -14,7 +14,8 @@ import {
 	getNewLinePosition,
 	invertAxis,
 } from '$lib/components/editable-grid/editable-grid.utils';
-import type { EventEmitter } from '$lib/modules/event-emitter/event-emitter';
+import { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
+import { WonderEventEmitter } from '@grekomp/wonder-event-emitter';
 import { writable, type Writable } from 'svelte/store';
 
 export class EditableGridController {
@@ -28,15 +29,27 @@ export class EditableGridController {
 	draggedLine: Writable<DraggedLine | undefined> = writable(undefined);
 
 	gridContainer?: HTMLElement;
-	eventEmitter: EventEmitter;
+	eventEmitter: WonderEventEmitter;
+	interactionStack: InteractionStack;
 
-	constructor(lines: EditableGridLines, cells: EditableGridCellData[], eventEmitter: EventEmitter) {
+	constructor({
+		lines,
+		cells,
+		eventEmitter = new WonderEventEmitter(),
+		interactionStack = new InteractionStack(),
+	}: {
+		lines: EditableGridLines;
+		cells: EditableGridCellData[];
+		eventEmitter?: WonderEventEmitter;
+		interactionStack?: InteractionStack;
+	}) {
 		this.__lines = lines;
 		this.__cells = cells;
 
 		this.lines = writable(lines);
 		this.cells = writable(cells);
 		this.eventEmitter = eventEmitter;
+		this.interactionStack = interactionStack;
 
 		this.handleDragStart = this.handleDragStart.bind(this);
 		this.handleDragLine = this.handleDragLine.bind(this);
@@ -228,6 +241,7 @@ export class EditableGridController {
 	// #endregion Splitting and merging cells
 	// #endregion Managing cells
 
+	// TODO: Refactor this to use the interaction stack
 	// #region Moving lines
 	handleDragStart(event: MouseEvent, lineName: string, axis: GridLineAxis) {
 		const line = this.findLine(lineName, axis);

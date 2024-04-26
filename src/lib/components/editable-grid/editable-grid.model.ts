@@ -3,7 +3,6 @@ import { defineEvent, defineEventDictionary } from '@grekomp/wonder-event-emitte
 import type { ComponentType } from 'svelte';
 
 export const gridContext = 'editableGridContext' as const;
-export const gridInteractionStackContext = 'editableGridInteractionStackContext' as const;
 
 export const gridStartLine = 'start' as const;
 export const gridEndLine = 'end' as const;

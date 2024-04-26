@@ -5,7 +5,6 @@
 	import { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
 	import {
 		gridContext,
-		gridInteractionStackContext,
 		type EditableGridCellData,
 	} from '$lib/components/editable-grid/editable-grid.model';
 	import {
@@ -13,14 +12,13 @@
 		editableGridCellMergeDragInteractionType,
 	} from '$lib/components/editable-grid/interactions/cell-merge-drag.interaction';
 	import * as Tooltip from '$lib/components/ui/tooltip';
-	import { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
 	import { getContext } from 'svelte';
 
 	export let cell: EditableGridCellData;
 	export let size: number = 16;
 
 	let grid = getContext<EditableGridController>(gridContext);
-	let interactionStack = getContext<InteractionStack>(gridInteractionStackContext);
+	let interactionStack = grid.interactionStack;
 
 	const handleMouseDown = (event: MouseEvent) => {
 		event.preventDefault();

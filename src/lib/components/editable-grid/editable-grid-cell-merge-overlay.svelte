@@ -1,18 +1,14 @@
 <script lang="ts">
 	import { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
-	import {
-		gridContext,
-		gridInteractionStackContext,
-	} from '$lib/components/editable-grid/editable-grid.model';
+	import { gridContext } from '$lib/components/editable-grid/editable-grid.model';
 	import {
 		EditableGridCellMergeDragInteraction,
 		editableGridCellMergeDragInteractionType,
 	} from '$lib/components/editable-grid/interactions/cell-merge-drag.interaction';
-	import type { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
 	import { getContext } from 'svelte';
 
 	const grid = getContext<EditableGridController>(gridContext);
-	const interactionStack = getContext<InteractionStack>(gridInteractionStackContext);
+	const interactionStack = grid.interactionStack;
 
 	$: interaction = $interactionStack.getByType<EditableGridCellMergeDragInteraction>(
 		editableGridCellMergeDragInteractionType,
