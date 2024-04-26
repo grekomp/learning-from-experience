@@ -201,7 +201,7 @@ export interface GetMinMaxValidLinePositionProps {
 	line: EditableGridLine;
 	axis: GridLineAxis;
 	lines: EditableGridLines;
-	cells: EditableGridCellData[];
+	cells: readonly EditableGridCellData[];
 	gridContainer: HTMLElement;
 	minCellWidth?: number;
 	minCellHeight?: number;
@@ -272,7 +272,7 @@ export interface GetNewLinePositionProps {
 	line: EditableGridLine;
 	axis: GridLineAxis;
 	lines: EditableGridLines;
-	cells: EditableGridCellData[];
+	cells: readonly EditableGridCellData[];
 	gridContainer: HTMLElement;
 	minCellWidth?: number;
 	minCellHeight?: number;

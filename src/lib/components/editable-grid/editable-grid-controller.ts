@@ -1,19 +1,12 @@
 import {
 	GridLineAxis,
-	gridLineKeyboardMoveDistance,
 	type DraggedLine,
 	type EditableGridCellBounds,
 	type EditableGridCellData,
 	type EditableGridLine,
 	type EditableGridLines,
 } from '$lib/components/editable-grid/editable-grid.model';
-import {
-	calculateRelativePosition,
-	getContainerSizeInAxis,
-	getNewCell,
-	getNewLinePosition,
-	invertAxis,
-} from '$lib/components/editable-grid/editable-grid.utils';
+import { getNewCell, invertAxis } from '$lib/components/editable-grid/editable-grid.utils';
 import { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
 import { WonderEventEmitter } from '@grekomp/wonder-event-emitter';
 import { writable, type Writable } from 'svelte/store';
@@ -21,9 +14,15 @@ import { writable, type Writable } from 'svelte/store';
 export class EditableGridController {
 	private __lines: EditableGridLines;
 	lines: Writable<EditableGridLines>;
+	getLines(): Readonly<EditableGridLines> {
+		return this.__lines;
+	}
 
 	private __cells: EditableGridCellData[];
 	cells: Writable<EditableGridCellData[]>;
+	getCells(): Readonly<EditableGridCellData[]> {
+		return this.__cells;
+	}
 
 	private __draggedLine?: DraggedLine;
 	draggedLine: Writable<DraggedLine | undefined> = writable(undefined);
@@ -50,10 +49,6 @@ export class EditableGridController {
 		this.cells = writable(cells);
 		this.eventEmitter = eventEmitter;
 		this.interactionStack = interactionStack;
-
-		this.handleDragStart = this.handleDragStart.bind(this);
-		this.handleDragLine = this.handleDragLine.bind(this);
-		this.handleDragEnd = this.handleDragEnd.bind(this);
 	}
 
 	// #region Managing lines
@@ -87,6 +82,10 @@ export class EditableGridController {
 	}
 	areLinesAligned(line1: EditableGridLine, line2: EditableGridLine) {
 		return Math.abs(line1.position - line2.position) < 0.00001;
+	}
+	moveLine(line: EditableGridLine, newPosition: number) {
+		line.position = newPosition;
+		this.lines.set(this.__lines);
 	}
 	// #endregion Managing lines
 
@@ -240,83 +239,4 @@ export class EditableGridController {
 	}
 	// #endregion Splitting and merging cells
 	// #endregion Managing cells
-
-	// TODO: Refactor this to use the interaction stack
-	// #region Moving lines
-	handleDragStart(event: MouseEvent, lineName: string, axis: GridLineAxis) {
-		const line = this.findLine(lineName, axis);
-
-		if (!line) return;
-
-		this.__draggedLine = {
-			line,
-			axis,
-			startX: event.clientX,
-			startY: event.clientY,
-		};
-		this.draggedLine.set(this.__draggedLine);
-	}
-	handleDragLine(event: MouseEvent) {
-		if (!this.gridContainer) return;
-		if (!this.__draggedLine) return;
-
-		const relativePosition = calculateRelativePosition(
-			event.clientX,
-			event.clientY,
-			this.gridContainer,
-		);
-		const requestedPosition =
-			this.__draggedLine.axis === GridLineAxis.Col ? relativePosition.x : relativePosition.y;
-
-		const newPosition = getNewLinePosition({
-			requestedPosition,
-			line: this.__draggedLine.line,
-			axis: this.__draggedLine.axis,
-			lines: this.__lines,
-			cells: this.__cells,
-			gridContainer: this.gridContainer,
-		});
-
-		this.__draggedLine.line.position = newPosition;
-
-		this.draggedLine.set(this.__draggedLine);
-		this.lines.set(this.__lines);
-	}
-	handleDragEnd() {
-		this.__draggedLine = undefined;
-		this.draggedLine.set(undefined);
-	}
-
-	handleLineKeyboardMove(event: KeyboardEvent, lineName: string, axis: GridLineAxis) {
-		if (axis === GridLineAxis.Col && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')
-			return;
-		if (axis === GridLineAxis.Row && event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
-
-		if (!this.gridContainer) return;
-
-		const line = this.findLine(lineName, axis);
-
-		if (!line) return;
-
-		const isIncrement = event.key === 'ArrowRight' || event.key === 'ArrowDown';
-		const movementAxisMultiplier = isIncrement ? 1 : -1;
-		const pixelPositionOffset = movementAxisMultiplier * gridLineKeyboardMoveDistance;
-		const relativePositionOffset =
-			pixelPositionOffset / getContainerSizeInAxis(axis, this.gridContainer);
-		const requestedPosition = line.position + relativePositionOffset;
-
-		const newPosition = getNewLinePosition({
-			requestedPosition,
-			line,
-			cells: this.__cells,
-			lines: this.__lines,
-			axis,
-			gridContainer: this.gridContainer,
-		});
-
-		line.position = newPosition;
-
-		this.lines.set(this.__lines);
-		// #endregion Moving lines
-	}
 }

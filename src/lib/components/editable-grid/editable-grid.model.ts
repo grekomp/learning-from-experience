@@ -1,4 +1,5 @@
 import type { EditableGridCellMouseEventData } from '$lib/components/editable-grid/events/editable-grid-cell-events';
+import type { EditableGridLineMouseEventData } from '$lib/components/editable-grid/events/editable-grid-line-events';
 import { defineEvent, defineEventDictionary } from '@grekomp/wonder-event-emitter';
 import type { ComponentType } from 'svelte';
 
@@ -77,5 +78,16 @@ export const gridEvents = defineEventDictionary({
 		mouseEnter: defineEvent<EditableGridCellMouseEventData>(),
 		mouseMove: defineEvent<EditableGridCellMouseEventData>(),
 		mouseLeave: defineEvent<EditableGridCellMouseEventData>(),
+	},
+	line: {
+		mouseDown: defineEvent<EditableGridLineMouseEventData>(),
+		mouseUp: defineEvent<EditableGridLineMouseEventData>(),
+	},
+	container: {
+		mouseDown: defineEvent<MouseEvent>(),
+		mouseUp: defineEvent<MouseEvent>(),
+		mouseEnter: defineEvent<MouseEvent>(),
+		mouseMove: defineEvent<MouseEvent>(),
+		mouseLeave: defineEvent<MouseEvent>(),
 	},
 });

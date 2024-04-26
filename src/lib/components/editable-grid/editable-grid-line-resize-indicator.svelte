@@ -1,18 +1,78 @@
 <script lang="ts">
 	import type { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
 	import {
+		GridLineAxis,
 		gridEndLine,
-		type GridLineAxis,
+		gridLineKeyboardMoveDistance,
 		type GridLineGroup,
 	} from '$lib/components/editable-grid/editable-grid.model';
+	import {
+		getContainerSizeInAxis,
+		getNewLinePosition,
+	} from '$lib/components/editable-grid/editable-grid.utils';
+	import {
+		EditableGridLineDragInteraction,
+		editableGridLineDragInteractionType,
+	} from '$lib/components/editable-grid/interactions/cell-line-drag.interaction';
 
 	export let axis: GridLineAxis;
 	export let line: GridLineGroup;
 	export let grid: EditableGridController;
+	let interactionStack = grid.interactionStack;
 
-	const draggedLine = grid.draggedLine;
+	$: dragInteraction = $interactionStack.getByType<EditableGridLineDragInteraction>(
+		editableGridLineDragInteractionType,
+	);
+	$: isDragged =
+		dragInteraction?.data?.line?.name === line.name && dragInteraction?.data?.axis === axis;
 
-	$: isDragged = $draggedLine?.line.name === line.name && $draggedLine?.axis === axis;
+	const handleMouseDown = () => {
+		const existingInteraction = interactionStack.getByType<EditableGridLineDragInteraction>(
+			editableGridLineDragInteractionType,
+		);
+
+		if (existingInteraction) existingInteraction.cancel();
+
+		const gridLine = grid.findLine(line.name, axis);
+		if (!gridLine) return;
+
+		const interaction = new EditableGridLineDragInteraction(grid.interactionStack, {
+			line: gridLine,
+			axis,
+			grid,
+		});
+		interaction.start();
+	};
+
+	const handleLineKeyboardMove = (event: KeyboardEvent) => {
+		if (axis === GridLineAxis.Col && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')
+			return;
+		if (axis === GridLineAxis.Row && event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return;
+
+		if (!grid.gridContainer) return;
+
+		const gridLine = grid.findLine(line.name, axis);
+
+		if (!gridLine) return;
+
+		const isIncrement = event.key === 'ArrowRight' || event.key === 'ArrowDown';
+		const movementAxisMultiplier = isIncrement ? 1 : -1;
+		const pixelPositionOffset = movementAxisMultiplier * gridLineKeyboardMoveDistance;
+		const relativePositionOffset =
+			pixelPositionOffset / getContainerSizeInAxis(axis, grid.gridContainer);
+		const requestedPosition = gridLine.position + relativePositionOffset;
+
+		const newPosition = getNewLinePosition({
+			requestedPosition,
+			line: gridLine,
+			cells: grid.getCells(),
+			lines: grid.getLines(),
+			axis,
+			gridContainer: grid.gridContainer,
+		});
+
+		grid.moveLine(gridLine, newPosition);
+	};
 </script>
 
 {#if axis === 'row'}
@@ -35,8 +95,8 @@
 			aria-valuemax="100"
 			aria-orientation="horizontal"
 			tabindex="0"
-			on:keydown={(event) => grid.handleLineKeyboardMove(event, line.name, axis)}
-			on:mousedown={(event) => grid.handleDragStart(event, line.name, axis)}
+			on:keydown={handleLineKeyboardMove}
+			on:mousedown={handleMouseDown}
 		>
 			<div
 				class="absolute bottom-0 left-0 right-0 top-0 my-auto h-[2px] transition-all group-hover:bg-neutral-900"
@@ -63,8 +123,8 @@
 			aria-valuemax="100"
 			aria-orientation="vertical"
 			tabindex="0"
-			on:keydown={(event) => grid.handleLineKeyboardMove(event, line.name, axis)}
-			on:mousedown={(event) => grid.handleDragStart(event, line.name, axis)}
+			on:keydown={handleLineKeyboardMove}
+			on:mousedown={handleMouseDown}
 		>
 			<div
 				class="absolute bottom-0 left-0 right-0 top-0 mx-auto w-[2px] transition-all group-hover:bg-neutral-900"

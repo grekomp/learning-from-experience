@@ -4,7 +4,11 @@
 	import EditableGridCell from '$lib/components/editable-grid/editable-grid-cell.svelte';
 	import { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
 	import EditableGridLineResizeIndicator from '$lib/components/editable-grid/editable-grid-line-resize-indicator.svelte';
-	import { GridLineAxis, gridContext } from '$lib/components/editable-grid/editable-grid.model';
+	import {
+		GridLineAxis,
+		gridContext,
+		gridEvents,
+	} from '$lib/components/editable-grid/editable-grid.model';
 	import {
 		getCssGridTemplateFromGridLines,
 		getGroupedGridLines,
@@ -22,12 +26,15 @@
 	$: groupedLines = getGroupedGridLines($lines, $cells);
 </script>
 
-<svelte:body on:mouseup={grid.handleDragEnd} on:mousemove={grid.handleDragLine} />
+<!-- <svelte:body on:mouseup={grid.handleDragEnd} on:mousemove={grid.handleDragLine} /> -->
 
 <div
 	class="grid h-full w-full [--grid-gap:4px]"
 	style:grid-template={getCssGridTemplateFromGridLines($lines)}
 	bind:this={grid.gridContainer}
+	on:mousemove={(event) => grid.eventEmitter.emit(gridEvents.container.mouseMove, event)}
+	role="grid"
+	tabindex="0"
 >
 	<EditableGridCellMergeOverlay />
 

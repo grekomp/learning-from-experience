@@ -3,9 +3,9 @@ import {
 	gridEvents,
 	type EditableGridCellData,
 } from '$lib/components/editable-grid/editable-grid.model';
-import type { DataTypeOf } from '$lib/modules/event-emitter/event-descriptors.model';
 import { InteractionBase } from '$lib/modules/interaction-stack/interaction-base';
 import type { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
+import type { DataTypeOf } from '@grekomp/wonder-event-emitter';
 
 export interface EditableGridCellMergeDragInteractionData {
 	grid: EditableGridController;
