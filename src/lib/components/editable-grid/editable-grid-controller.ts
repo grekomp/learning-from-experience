@@ -1,6 +1,5 @@
 import {
 	GridLineAxis,
-	type DraggedLine,
 	type EditableGridCellBounds,
 	type EditableGridCellData,
 	type EditableGridLine,
@@ -23,9 +22,6 @@ export class EditableGridController {
 	getCells(): Readonly<EditableGridCellData[]> {
 		return this.__cells;
 	}
-
-	private __draggedLine?: DraggedLine;
-	draggedLine: Writable<DraggedLine | undefined> = writable(undefined);
 
 	gridContainer?: HTMLElement;
 	eventEmitter: WonderEventEmitter;
