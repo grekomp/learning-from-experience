@@ -10,7 +10,7 @@
 	import {
 		EditableGridCellMergeDragInteraction,
 		editableGridCellMergeDragInteractionType,
-	} from '$lib/components/editable-grid/interactions/cell-merge-drag.interaction';
+	} from '$lib/components/editable-grid/interactions/cell-merge-drag/cell-merge-drag.interaction';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { getContext } from 'svelte';
 

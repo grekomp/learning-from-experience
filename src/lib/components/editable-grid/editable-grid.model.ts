@@ -44,10 +44,23 @@ export interface EditableGridLines {
 	col: EditableGridLine[];
 }
 
+export interface LineBounds {
+	line: EditableGridLine;
+	start: EditableGridLine;
+	end: EditableGridLine;
+}
+
+/**
+ * @deprecated
+ */
 export interface EditableGridLineGroups {
 	rows: GridLineGroup[];
 	cols: GridLineGroup[];
 }
+
+/**
+ * @deprecated
+ */
 export interface GridLineGroup {
 	name: string;
 	/**

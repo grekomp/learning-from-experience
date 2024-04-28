@@ -1,11 +1,17 @@
 <script lang="ts">
 	import { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
+	import type {
+		EditableGridOverlayDataFor,
+		OverlayTargetType,
+	} from '$lib/components/editable-grid/editable-grid-overlay.model';
 	import { gridContext } from '$lib/components/editable-grid/editable-grid.model';
 	import {
 		EditableGridCellMergeDragInteraction,
 		editableGridCellMergeDragInteractionType,
-	} from '$lib/components/editable-grid/interactions/cell-merge-drag.interaction';
+	} from '$lib/components/editable-grid/interactions/cell-merge-drag/cell-merge-drag.interaction';
 	import { getContext } from 'svelte';
+
+	export let overlay: EditableGridOverlayDataFor<OverlayTargetType.Custom>;
 
 	const grid = getContext<EditableGridController>(gridContext);
 	const interactionStack = grid.interactionStack;
@@ -26,6 +32,7 @@
 		style:grid-row-end={toCell.bounds.row.end.name}
 		style:grid-column-start={toCell.bounds.col.start.name}
 		style:grid-column-end={toCell.bounds.col.end.name}
+		style:z-index={overlay.zIndex}
 		class="pointer-events-none z-40 bg-neutral-900 opacity-80"
 	>
 		{mergeAxis}

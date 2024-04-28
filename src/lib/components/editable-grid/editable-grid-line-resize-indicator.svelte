@@ -2,9 +2,10 @@
 	import type { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
 	import {
 		GridLineAxis,
+		gridContext,
 		gridEndLine,
 		gridLineKeyboardMoveDistance,
-		type GridLineGroup,
+		type LineBounds,
 	} from '$lib/components/editable-grid/editable-grid.model';
 	import {
 		getContainerSizeInAxis,
@@ -13,18 +14,21 @@
 	import {
 		EditableGridLineDragInteraction,
 		editableGridLineDragInteractionType,
-	} from '$lib/components/editable-grid/interactions/cell-line-drag.interaction';
+	} from '$lib/components/editable-grid/interactions/line-drag/line-drag.interaction';
+	import { getContext } from 'svelte';
 
 	export let axis: GridLineAxis;
-	export let line: GridLineGroup;
-	export let grid: EditableGridController;
+	export let lineBounds: LineBounds;
+
+	const grid = getContext<EditableGridController>(gridContext);
 	let interactionStack = grid.interactionStack;
 
 	$: dragInteraction = $interactionStack.getByType<EditableGridLineDragInteraction>(
 		editableGridLineDragInteractionType,
 	);
 	$: isDragged =
-		dragInteraction?.data?.line?.name === line.name && dragInteraction?.data?.axis === axis;
+		dragInteraction?.data?.line?.name === lineBounds.line.name &&
+		dragInteraction?.data?.axis === axis;
 
 	const handleMouseDown = () => {
 		const existingInteraction = interactionStack.getByType<EditableGridLineDragInteraction>(
@@ -33,7 +37,7 @@
 
 		if (existingInteraction) existingInteraction.cancel();
 
-		const gridLine = grid.findLine(line.name, axis);
+		const gridLine = grid.findLine(lineBounds.line.name, axis);
 		if (!gridLine) return;
 
 		const interaction = new EditableGridLineDragInteraction(grid.interactionStack, {
@@ -51,7 +55,7 @@
 
 		if (!grid.gridContainer) return;
 
-		const gridLine = grid.findLine(line.name, axis);
+		const gridLine = grid.findLine(lineBounds.line.name, axis);
 
 		if (!gridLine) return;
 
@@ -77,10 +81,10 @@
 
 {#if axis === 'row'}
 	<div
-		style:grid-row-start={line.name}
+		style:grid-row-start={lineBounds.line.name}
 		style:grid-row-end={gridEndLine}
-		style:grid-column-start={line.start.name}
-		style:grid-column-end={line.end.name}
+		style:grid-column-start={lineBounds.start.name}
+		style:grid-column-end={lineBounds.end.name}
 		class="pointer-events-none relative z-50 [--grid-line-area:10px]"
 	>
 		<!-- TODO: Accessability props -->
@@ -106,9 +110,9 @@
 	</div>
 {:else}
 	<div
-		style:grid-row-start={line.start.name}
-		style:grid-row-end={line.end.name}
-		style:grid-column-start={line.name}
+		style:grid-row-start={lineBounds.start.name}
+		style:grid-row-end={lineBounds.end.name}
+		style:grid-column-start={lineBounds.line.name}
 		style:grid-column-end={gridEndLine}
 		class="pointer-events-none relative z-50 [--grid-line-area:10px]"
 	>

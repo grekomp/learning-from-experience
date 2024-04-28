@@ -1,9 +1,13 @@
+import type { EditableGridOverlayData } from '$lib/components/editable-grid/editable-grid-overlay.model';
 import {
 	GridLineAxis,
+	gridEndLine,
+	gridStartLine,
 	type EditableGridCellBounds,
 	type EditableGridCellData,
 	type EditableGridLine,
 	type EditableGridLines,
+	type LineBounds,
 } from '$lib/components/editable-grid/editable-grid.model';
 import { getNewCell, invertAxis } from '$lib/components/editable-grid/editable-grid.utils';
 import { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
@@ -22,6 +26,15 @@ export class EditableGridController {
 	getCells(): Readonly<EditableGridCellData[]> {
 		return this.__cells;
 	}
+
+	private __overlays: EditableGridOverlayData[] = [];
+	overlays: Writable<EditableGridOverlayData[]> = writable(this.__overlays);
+	getOverlays(): Readonly<EditableGridOverlayData[]> {
+		return this.__overlays;
+	}
+
+	private store: Writable<EditableGridController> = writable(this);
+	subscribe = this.store.subscribe;
 
 	gridContainer?: HTMLElement;
 	eventEmitter: WonderEventEmitter;
@@ -82,6 +95,42 @@ export class EditableGridController {
 	moveLine(line: EditableGridLine, newPosition: number) {
 		line.position = newPosition;
 		this.lines.set(this.__lines);
+		this.store.set(this);
+	}
+	getLineBounds(line: EditableGridLine): LineBounds | null {
+		const lineAxis = this.findLineAxis(line);
+		if (!lineAxis) return null;
+
+		const inverseAxis = invertAxis(lineAxis);
+		const inverseAxisStartLine = this.findLine(gridStartLine, inverseAxis);
+		const inverseAxisEndLine = this.findLine(gridEndLine, inverseAxis);
+
+		if (!inverseAxisStartLine || !inverseAxisEndLine) return null;
+
+		const { start, end } = this.__cells.reduce(
+			({ start, end }, cell) => {
+				if (cell.bounds[lineAxis].start !== line && cell.bounds[lineAxis].end !== line)
+					return { start, end };
+
+				const cellStart = cell.bounds[inverseAxis].start;
+				const cellEnd = cell.bounds[inverseAxis].end;
+
+				return {
+					start: start.position < cellStart.position ? start : cellStart,
+					end: end.position > cellEnd.position ? end : cellEnd,
+				};
+			},
+			{
+				start: inverseAxisEndLine,
+				end: inverseAxisStartLine,
+			},
+		);
+
+		return {
+			line,
+			start,
+			end,
+		};
 	}
 	// #endregion Managing lines
 
@@ -183,6 +232,7 @@ export class EditableGridController {
 
 		this.lines.set(this.__lines);
 		this.cells.set(this.__cells);
+		this.store.set(this);
 	}
 
 	canMergeCells(source: EditableGridCellData, target: EditableGridCellData): boolean {
@@ -232,7 +282,39 @@ export class EditableGridController {
 
 		this.cells.set(this.__cells);
 		this.lines.set(this.__lines);
+		this.store.set(this);
 	}
 	// #endregion Splitting and merging cells
 	// #endregion Managing cells
+
+	// #region Managing overlays
+	/**
+	 * TODO: Overlays
+	 *
+	 * - Overlays are components that are rendered on top of the grid.
+	 * - Overlays can be used to prevent interaction with certain parts of the grid during certain interactions (like drag and drop).
+	 * - Overlays can be used to show visual feedback during certain interactions (like merging/splitting cells).
+	 * - Overlays can be enabled and controlled by interactions.
+	 * - Overlays can still call some of the same events that the grid itself can call - like cell mouseMove, click, etc.
+	 * - Overlays can cover:
+	 *   - The entire grid
+	 *   - A single cell
+	 *   - A set of cells
+	 *   - A grid area
+	 *   - A grid line
+	 *   - A set of grid lines
+	 *   - A set of grid line groups
+	 */
+	addOverlay(overlay: EditableGridOverlayData) {
+		this.__overlays.push(overlay);
+		this.overlays.set(this.__overlays);
+		this.store.set(this);
+	}
+	removeOverlay(overlay: EditableGridOverlayData | undefined) {
+		if (!overlay) return;
+		this.__overlays = this.__overlays.filter((o) => o !== overlay);
+		this.overlays.set(this.__overlays);
+		this.store.set(this);
+	}
+	// #endregion Managing overlays
 }
