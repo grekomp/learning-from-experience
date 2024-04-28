@@ -52,6 +52,3 @@
 	<svelte:component this={cell.component} {cell} />
 	<slot />
 </div>
-
-<style>
-</style>
