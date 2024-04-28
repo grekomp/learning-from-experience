@@ -8,9 +8,7 @@ import {
 	type EditableGridCellBounds,
 	type EditableGridCellData,
 	type EditableGridLine,
-	type EditableGridLineGroups,
 	type EditableGridLines,
-	type GridLineGroup,
 } from '$lib/components/editable-grid/editable-grid.model';
 import { isDefined } from '$lib/utils/filter.utils';
 
@@ -38,126 +36,6 @@ export function getCssGridTemplateFromGridLines(gridLines: EditableGridLines): s
 		.join(' ');
 
 	return `[${gridStartLine}] ${rows} / [${gridStartLine}] ${cols}`;
-}
-
-export function getGroupedGridLines(gridLines: EditableGridLines, cells: EditableGridCellData[]) {
-	const lineGroups: EditableGridLineGroups = {
-		rows: [],
-		cols: [],
-	};
-
-	cells
-		.toSorted((a, b) => a.bounds.row.start.position - b.bounds.row.start.position)
-		.forEach((cell) => {
-			addOrExpandGroup({
-				groups: lineGroups.rows,
-				line: cell.bounds.row.start.name,
-				crossAxisStart: cell.bounds.col.start,
-				crossAxisEnd: cell.bounds.col.end,
-			});
-		});
-	cells
-		.toSorted((a, b) => a.bounds.row.end.position - b.bounds.row.end.position)
-		.forEach((cell) => {
-			addOrExpandGroup({
-				groups: lineGroups.rows,
-				line: cell.bounds.row.end.name,
-				crossAxisStart: cell.bounds.col.start,
-				crossAxisEnd: cell.bounds.col.end,
-			});
-		});
-	cells
-		.toSorted((a, b) => a.bounds.col.start.position - b.bounds.col.start.position)
-		.forEach((cell) => {
-			addOrExpandGroup({
-				groups: lineGroups.cols,
-				line: cell.bounds.col.start.name,
-				crossAxisStart: cell.bounds.row.start,
-				crossAxisEnd: cell.bounds.row.end,
-			});
-		});
-	cells
-		.toSorted((a, b) => a.bounds.col.end.position - b.bounds.col.end.position)
-		.forEach((cell) => {
-			addOrExpandGroup({
-				groups: lineGroups.cols,
-				line: cell.bounds.col.end.name,
-				crossAxisStart: cell.bounds.row.start,
-				crossAxisEnd: cell.bounds.row.end,
-			});
-		});
-
-	lineGroups.rows = lineGroups.rows.filter(
-		(group) => group.name !== gridStartLine && group.name !== gridEndLine,
-	);
-	lineGroups.cols = lineGroups.cols.filter(
-		(group) => group.name !== gridStartLine && group.name !== gridEndLine,
-	);
-
-	return lineGroups;
-}
-
-export interface AddOrExpandGroupProps {
-	groups: GridLineGroup[];
-	line: string;
-	crossAxisStart: EditableGridLine;
-	crossAxisEnd: EditableGridLine;
-}
-export function addOrExpandGroup({
-	groups,
-	line,
-	crossAxisStart,
-	crossAxisEnd,
-}: AddOrExpandGroupProps) {
-	const matchingGroups = groups.filter((group) => group.name === line);
-
-	if (matchingGroups.length === 0) {
-		groups.push({
-			name: line,
-			start: crossAxisStart,
-			end: crossAxisEnd,
-		});
-		return;
-	}
-
-	// Check if an overlapping group already exists
-	if (
-		matchingGroups.some(
-			(group) =>
-				group.start.position <= crossAxisStart.position &&
-				group.end.position >= crossAxisEnd.position,
-		)
-	)
-		return;
-
-	const expandedGroup = matchingGroups.some((group) => {
-		let expandedGroup = false;
-		if (
-			(group.start === crossAxisEnd || group.start.position < crossAxisEnd.position) &&
-			group.start.position > crossAxisStart.position
-		) {
-			group.start = crossAxisStart;
-			expandedGroup = true;
-		}
-		if (
-			(group.end === crossAxisStart || group.end.position > crossAxisStart.position) &&
-			group.end.position < crossAxisEnd.position
-		) {
-			group.end = crossAxisEnd;
-			expandedGroup = true;
-		}
-
-		if (expandedGroup) return true;
-	});
-
-	if (!expandedGroup) {
-		groups.push({
-			name: line,
-			start: crossAxisStart,
-			end: crossAxisEnd,
-		});
-		return;
-	}
 }
 
 export function calculateRelativePosition(clientX: number, clientY: number, element: HTMLElement) {

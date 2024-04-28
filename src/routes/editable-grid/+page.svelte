@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
+	import { OverlayTargetType } from '$lib/components/editable-grid/editable-grid-overlay.model';
 	import { type EditableGridCellData } from '$lib/components/editable-grid/editable-grid.model';
 	import EditableGrid from '$lib/components/editable-grid/editable-grid.svelte';
+	import LineDragOverlay from '$lib/components/editable-grid/interactions/line-drag/line-drag.overlay.svelte';
 	import ExampleGridCell from '$lib/components/ui/example-grid-cell/ExampleGridCell.svelte';
 	import InteractionStackDebug from '$lib/modules/interaction-stack/interaction-stack-debug.svelte';
 
@@ -122,6 +124,12 @@
 			row: Object.values(rowLines),
 		},
 		cells: initialCells,
+		overlays: [
+			{
+				targetType: OverlayTargetType.Lines,
+				component: LineDragOverlay,
+			},
+		],
 	});
 </script>
 

@@ -20,10 +20,13 @@ export interface EditableGridLineDragInteractionData {
 	grid: EditableGridController;
 	line: EditableGridLine;
 	axis: GridLineAxis;
-	overlay?: EditableGridOverlayData;
 }
 
 export const editableGridLineDragInteractionType = 'EditableGridLineDragInteraction' as const;
+const overlay: EditableGridOverlayData = {
+	targetType: OverlayTargetType.Container,
+	component: null,
+};
 
 export class EditableGridLineDragInteraction extends InteractionBase<
 	EditableGridLineDragInteraction,
@@ -39,19 +42,13 @@ export class EditableGridLineDragInteraction extends InteractionBase<
 
 	_onStart() {
 		this.data.grid.eventEmitter.on(gridEvents.container.mouseMove, this.onMouseMove);
-
-		const overlay: EditableGridOverlayData = {
-			targetType: OverlayTargetType.Container,
-			component: null,
-		};
-		this.data = { ...this.data, overlay };
 		this.data.grid.addOverlay(overlay);
 		document.addEventListener('mouseup', this.onMouseUp);
 	}
 	_onDispose() {
 		this.data.grid.eventEmitter.off(gridEvents.container.mouseMove, this.onMouseMove);
 		document.removeEventListener('mouseup', this.onMouseUp);
-		this.data.overlay && this.data.grid.removeOverlay(this.data.overlay);
+		this.data.grid.removeOverlay(overlay);
 	}
 
 	onMouseMove(eventData: DataTypeOf<typeof gridEvents.container.mouseMove>) {
