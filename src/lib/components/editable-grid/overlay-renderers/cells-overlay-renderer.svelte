@@ -4,7 +4,7 @@
 		EditableGridOverlayDataFor,
 		OverlayTargetType,
 	} from '$lib/components/editable-grid/editable-grid-overlay.model';
-	import { gridContext, gridEvents } from '$lib/components/editable-grid/editable-grid.model';
+	import { gridContext } from '$lib/components/editable-grid/editable-grid.model';
 	import { getContext } from 'svelte';
 
 	const grid = getContext<EditableGridController>(gridContext);
@@ -23,14 +23,10 @@
 		style:z-index={overlay.zIndex}
 		style:pointer-events={overlay.pointerEvents}
 		class="group relative"
-		on:click={(event) =>
-			grid.eventEmitter.emit(gridEvents.cell.click, { originalEvent: event, cell })}
-		on:mousemove={(event) =>
-			grid.eventEmitter.emit(gridEvents.cell.mouseMove, { originalEvent: event, cell })}
-		on:mouseenter={(event) =>
-			grid.eventEmitter.emit(gridEvents.cell.mouseEnter, { originalEvent: event, cell })}
-		on:mouseleave={(event) =>
-			grid.eventEmitter.emit(gridEvents.cell.mouseLeave, { originalEvent: event, cell })}
+		on:click={(event) => grid.events.cell.click.emit({ originalEvent: event, cell })}
+		on:mousemove={(event) => grid.events.cell.mouseMove.emit({ originalEvent: event, cell })}
+		on:mouseenter={(event) => grid.events.cell.mouseEnter.emit({ originalEvent: event, cell })}
+		on:mouseleave={(event) => grid.events.cell.mouseLeave.emit({ originalEvent: event, cell })}
 		role="presentation"
 	>
 		<svelte:component this={overlay.component} />

@@ -80,9 +80,9 @@ export class EditableGridCellMergeDragInteraction extends InteractionBase<
 	}
 
 	_onStart() {
-		this.data.grid.eventEmitter.on(gridEvents.cell.mouseEnter, this.onCellMouseEnter);
-		this.data.grid.eventEmitter.on(gridEvents.cell.click, this.onCellClick);
-		this.data.grid.eventEmitter.on(gridEvents.cell.mouseMove, this.onCellMouseMove);
+		this.data.grid.events.cell.mouseEnter.on(this.onCellMouseEnter);
+		this.data.grid.events.cell.click.on(this.onCellClick);
+		this.data.grid.events.cell.mouseMove.on(this.onCellMouseMove);
 
 		this.data.grid.addOverlay(containerOverlay);
 		this.data.grid.addOverlay(cellsOverlay);
@@ -109,9 +109,9 @@ export class EditableGridCellMergeDragInteraction extends InteractionBase<
 		}
 	}
 	_onDispose() {
-		this.data.grid.eventEmitter.off(gridEvents.cell.mouseEnter, this.onCellMouseEnter);
-		this.data.grid.eventEmitter.off(gridEvents.cell.click, this.onCellClick);
-		this.data.grid.eventEmitter.off(gridEvents.cell.mouseMove, this.onCellMouseMove);
+		this.data.grid.events.cell.mouseEnter.off(this.onCellMouseEnter);
+		this.data.grid.events.cell.click.off(this.onCellClick);
+		this.data.grid.events.cell.mouseMove.off(this.onCellMouseMove);
 		this.data.grid.removeOverlay(containerOverlay);
 		this.data.grid.removeOverlay(cellsOverlay);
 		this.data.grid.removeOverlay(mergeAreaOverlay);

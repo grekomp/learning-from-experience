@@ -2,7 +2,6 @@
 	import type { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
 	import {
 		gridContext,
-		gridEvents,
 		type EditableGridCellData,
 	} from '$lib/components/editable-grid/editable-grid.model';
 	import { cn } from '$lib/utils/shadcn.utils';
@@ -12,16 +11,16 @@
 	const grid = getContext<EditableGridController>(gridContext);
 
 	const handleMouseEnter = (event: MouseEvent) => {
-		grid.eventEmitter.emit(gridEvents.cell.mouseEnter, { cell, originalEvent: event });
+		grid.events.cell.mouseEnter.emit({ cell, originalEvent: event });
 	};
 	const handleMouseMove = (event: MouseEvent) => {
-		grid.eventEmitter.emit(gridEvents.cell.mouseMove, { cell, originalEvent: event });
+		grid.events.cell.mouseMove.emit({ cell, originalEvent: event });
 	};
 	const handleClick = (event: MouseEvent) => {
-		grid.eventEmitter.emit(gridEvents.cell.click, { cell, originalEvent: event });
+		grid.events.cell.click.emit({ cell, originalEvent: event });
 	};
 	const handleMouseLeave = (event: MouseEvent) => {
-		grid.eventEmitter.emit(gridEvents.cell.mouseLeave, { cell, originalEvent: event });
+		grid.events.cell.mouseLeave.emit({ cell, originalEvent: event });
 	};
 </script>
 

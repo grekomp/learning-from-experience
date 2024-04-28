@@ -41,12 +41,12 @@ export class EditableGridLineDragInteraction extends InteractionBase<
 	}
 
 	_onStart() {
-		this.data.grid.eventEmitter.on(gridEvents.container.mouseMove, this.onMouseMove);
+		this.data.grid.events.container.mouseMove.on(this.onMouseMove);
 		this.data.grid.addOverlay(overlay);
 		document.addEventListener('mouseup', this.onMouseUp);
 	}
 	_onDispose() {
-		this.data.grid.eventEmitter.off(gridEvents.container.mouseMove, this.onMouseMove);
+		this.data.grid.events.container.mouseMove.off(this.onMouseMove);
 		document.removeEventListener('mouseup', this.onMouseUp);
 		this.data.grid.removeOverlay(overlay);
 	}

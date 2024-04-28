@@ -1,10 +1,6 @@
 <script lang="ts">
 	import { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
-	import {
-		GridLineAxis,
-		gridContext,
-		gridEvents,
-	} from '$lib/components/editable-grid/editable-grid.model';
+	import { GridLineAxis, gridContext } from '$lib/components/editable-grid/editable-grid.model';
 	import {
 		EditableGridCellMergeDragInteraction,
 		editableGridCellMergeDragInteractionType,
@@ -31,7 +27,7 @@
 		if (!grid.gridContainer) return;
 		if (!cell) return;
 
-		grid.eventEmitter.emit(gridEvents.cell.mouseMove, { cell, originalEvent: event });
+		grid.events.cell.mouseMove.emit({ cell, originalEvent: event });
 
 		const { startX, startY } = interaction.data;
 		const { clientX, clientY, target } = event;

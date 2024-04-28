@@ -2,6 +2,7 @@ import type { EditableGridOverlayData } from '$lib/components/editable-grid/edit
 import {
 	GridLineAxis,
 	gridEndLine,
+	gridEvents,
 	gridStartLine,
 	type EditableGridCellBounds,
 	type EditableGridCellData,
@@ -11,7 +12,11 @@ import {
 } from '$lib/components/editable-grid/editable-grid.model';
 import { getNewCell, invertAxis } from '$lib/components/editable-grid/editable-grid.utils';
 import { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
-import { WonderEventEmitter } from '@grekomp/wonder-event-emitter';
+import {
+	WonderEventEmitter,
+	bindEventDictionary,
+	type BoundEventDictionaryFor,
+} from '@grekomp/wonder-event-emitter';
 import { writable, type Writable } from 'svelte/store';
 
 export class EditableGridController {
@@ -37,6 +42,7 @@ export class EditableGridController {
 	subscribe = this.store.subscribe;
 
 	gridContainer?: HTMLElement;
+	events: BoundEventDictionaryFor<typeof gridEvents>;
 	eventEmitter: WonderEventEmitter;
 	interactionStack: InteractionStack;
 
@@ -62,6 +68,7 @@ export class EditableGridController {
 		this.overlays = writable(overlays);
 		this.eventEmitter = eventEmitter;
 		this.interactionStack = interactionStack;
+		this.events = bindEventDictionary(gridEvents, this.eventEmitter);
 	}
 
 	// #region Managing lines
