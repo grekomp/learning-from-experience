@@ -19,6 +19,14 @@
 			<li>
 				<Navlink href="/posts">Posts</Navlink>
 			</li>
+			<li>
+				<Navlink href="/editable-grid">Editable Grid</Navlink>
+			</li>
+			<li>
+				<Navlink href="https://www.npmjs.com/package/@grekomp/wonder-event-emitter"
+					>Wonder Event Emitter</Navlink
+				>
+			</li>
 		</ul>
 	</nav>
 </header>
