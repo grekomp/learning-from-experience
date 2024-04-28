@@ -14,7 +14,8 @@
 		style:grid-column-start={bounds.col.start.name}
 		style:grid-column-end={bounds.col.end.name}
 		style:z-index={overlay.zIndex}
-		class="group pointer-events-auto relative"
+		style:pointer-events={overlay.pointerEvents}
+		class="group relative"
 	>
 		<svelte:component this={overlay.component} />
 	</div>

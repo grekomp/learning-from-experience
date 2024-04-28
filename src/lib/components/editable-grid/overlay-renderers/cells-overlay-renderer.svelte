@@ -8,18 +8,21 @@
 	import { getContext } from 'svelte';
 
 	const grid = getContext<EditableGridController>(gridContext);
+	let cells = grid.cells;
 
 	export let overlay: EditableGridOverlayDataFor<OverlayTargetType.Cells>;
+	$: target = overlay.target ?? $cells;
 </script>
 
-{#each overlay.target as cell}
+{#each target as cell}
 	<div
 		style:grid-row-start={cell.bounds.row.start.name}
 		style:grid-row-end={cell.bounds.row.end.name}
 		style:grid-column-start={cell.bounds.col.start.name}
 		style:grid-column-end={cell.bounds.col.end.name}
 		style:z-index={overlay.zIndex}
-		class="group pointer-events-auto relative"
+		style:pointer-events={overlay.pointerEvents}
+		class="group relative"
 		on:click={(event) =>
 			grid.eventEmitter.emit(gridEvents.cell.click, { originalEvent: event, cell })}
 		on:mousemove={(event) =>

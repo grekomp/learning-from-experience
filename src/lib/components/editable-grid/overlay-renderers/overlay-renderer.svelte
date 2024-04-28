@@ -9,20 +9,26 @@
 	import LinesOverlayRendrerer from '$lib/components/editable-grid/overlay-renderers/lines-overlay-renderer.svelte';
 
 	export let overlay: EditableGridOverlayData;
+	let overlayWithDefaults: EditableGridOverlayData;
+	$: overlayWithDefaults = {
+		...overlay,
+		zIndex: overlay.zIndex ?? 0,
+		pointerEvents: overlay.pointerEvents ?? 'auto',
+	};
 </script>
 
-{#if overlay.targetType === OverlayTargetType.Cells}
-	<CellsOverlayRenderer {overlay} />
+{#if overlayWithDefaults.targetType === OverlayTargetType.Cells}
+	<CellsOverlayRenderer overlay={overlayWithDefaults} />
 {/if}
-{#if overlay.targetType === OverlayTargetType.Lines}
-	<LinesOverlayRendrerer {overlay} />
+{#if overlayWithDefaults.targetType === OverlayTargetType.Lines}
+	<LinesOverlayRendrerer overlay={overlayWithDefaults} />
 {/if}
-{#if overlay.targetType === OverlayTargetType.Areas}
-	<AreasOverlayRenderer {overlay} />
+{#if overlayWithDefaults.targetType === OverlayTargetType.Areas}
+	<AreasOverlayRenderer overlay={overlayWithDefaults} />
 {/if}
-{#if overlay.targetType === OverlayTargetType.Container}
-	<ContainerOverlayRenderer {overlay} />
+{#if overlayWithDefaults.targetType === OverlayTargetType.Container}
+	<ContainerOverlayRenderer overlay={overlayWithDefaults} />
 {/if}
-{#if overlay.targetType === OverlayTargetType.Custom}
-	<svelte:component this={overlay.component} {overlay} />
+{#if overlayWithDefaults.targetType === OverlayTargetType.Custom}
+	<svelte:component this={overlay.component} overlay={overlayWithDefaults} />
 {/if}
