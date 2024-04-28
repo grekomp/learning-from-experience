@@ -10,7 +10,7 @@
 	import {
 		EditableGridCellMergeDragInteraction,
 		editableGridCellMergeDragInteractionType,
-	} from '$lib/components/editable-grid/interactions/cell-merge-drag/cell-merge-drag.interaction';
+	} from '$lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-drag.interaction';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { getContext } from 'svelte';
 
@@ -32,6 +32,8 @@
 		const newInteraction = new EditableGridCellMergeDragInteraction(interactionStack, {
 			grid,
 			fromCell: cell,
+			startX: event.clientX,
+			startY: event.clientY,
 		});
 		newInteraction.start();
 	};

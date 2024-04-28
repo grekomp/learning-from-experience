@@ -8,7 +8,7 @@
 	import {
 		EditableGridCellMergeDragInteraction,
 		editableGridCellMergeDragInteractionType,
-	} from '$lib/components/editable-grid/interactions/cell-merge-drag/cell-merge-drag.interaction';
+	} from '$lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-drag.interaction';
 	import { getContext } from 'svelte';
 
 	export let overlay: EditableGridOverlayDataFor<OverlayTargetType.Custom>;
@@ -23,7 +23,6 @@
 	$: toCell = interaction?.data.toCell;
 
 	$: canMerge = fromCell && toCell ? grid.canMergeCells(fromCell, toCell) : false;
-	$: mergeAxis = fromCell && toCell ? grid.findValidCellsMergeAxis(fromCell, toCell) : null;
 </script>
 
 {#if canMerge && toCell}
@@ -33,8 +32,7 @@
 		style:grid-column-start={toCell.bounds.col.start.name}
 		style:grid-column-end={toCell.bounds.col.end.name}
 		style:z-index={overlay.zIndex}
-		class="pointer-events-none z-40 bg-neutral-900 opacity-80"
-	>
-		{mergeAxis}
-	</div>
+		style:pointer-events={overlay.pointerEvents}
+		class="z-40 bg-neutral-900 opacity-80"
+	></div>
 {/if}

@@ -256,6 +256,33 @@ export function getMinMaxValidLinePosition({
 	};
 }
 
+export interface GetMinMaxValidCellSplitPositionProps {
+	gridContainer: HTMLElement;
+	cell: EditableGridCellData;
+	axis: GridLineAxis;
+	minCellWidth?: number;
+	minCellHeight?: number;
+}
+export function getMinMaxValidCellSplitPosition({
+	gridContainer,
+	cell,
+	axis,
+	minCellWidth = gridMinCellWidth,
+	minCellHeight = gridMinCellHeight,
+}: GetMinMaxValidCellSplitPositionProps) {
+	const cellStartPosition = cell.bounds[axis].start.position;
+	const cellEndPosition = cell.bounds[axis].end.position;
+
+	const minCellSize = axis === GridLineAxis.Row ? minCellHeight : minCellWidth;
+	const containerSize = getContainerSizeInAxis(axis, gridContainer);
+
+	const relativeOffset = minCellSize / containerSize;
+	return {
+		min: Math.max(cellStartPosition + relativeOffset, 0),
+		max: Math.min(cellEndPosition - relativeOffset, 1),
+	};
+}
+
 export interface GetNewCellProps {
 	bounds: EditableGridCellBounds;
 	splitFrom: EditableGridCellData;
