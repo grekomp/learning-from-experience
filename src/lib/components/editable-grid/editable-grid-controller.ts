@@ -27,8 +27,8 @@ export class EditableGridController {
 		return this.__cells;
 	}
 
-	private __overlays: EditableGridOverlayData[] = [];
-	overlays: Writable<EditableGridOverlayData[]> = writable(this.__overlays);
+	private __overlays: EditableGridOverlayData[];
+	overlays: Writable<EditableGridOverlayData[]>;
 	getOverlays(): Readonly<EditableGridOverlayData[]> {
 		return this.__overlays;
 	}
@@ -43,19 +43,23 @@ export class EditableGridController {
 	constructor({
 		lines,
 		cells,
+		overlays = [],
 		eventEmitter = new WonderEventEmitter(),
 		interactionStack = new InteractionStack(),
 	}: {
 		lines: EditableGridLines;
 		cells: EditableGridCellData[];
+		overlays?: EditableGridOverlayData[];
 		eventEmitter?: WonderEventEmitter;
 		interactionStack?: InteractionStack;
 	}) {
 		this.__lines = lines;
 		this.__cells = cells;
+		this.__overlays = overlays;
 
 		this.lines = writable(lines);
 		this.cells = writable(cells);
+		this.overlays = writable(overlays);
 		this.eventEmitter = eventEmitter;
 		this.interactionStack = interactionStack;
 	}
@@ -288,23 +292,6 @@ export class EditableGridController {
 	// #endregion Managing cells
 
 	// #region Managing overlays
-	/**
-	 * TODO: Overlays
-	 *
-	 * - Overlays are components that are rendered on top of the grid.
-	 * - Overlays can be used to prevent interaction with certain parts of the grid during certain interactions (like drag and drop).
-	 * - Overlays can be used to show visual feedback during certain interactions (like merging/splitting cells).
-	 * - Overlays can be enabled and controlled by interactions.
-	 * - Overlays can still call some of the same events that the grid itself can call - like cell mouseMove, click, etc.
-	 * - Overlays can cover:
-	 *   - The entire grid
-	 *   - A single cell
-	 *   - A set of cells
-	 *   - A grid area
-	 *   - A grid line
-	 *   - A set of grid lines
-	 *   - A set of grid line groups
-	 */
 	addOverlay(overlay: EditableGridOverlayData) {
 		this.__overlays.push(overlay);
 		this.overlays.set(this.__overlays);
