@@ -1,10 +1,7 @@
 <script lang="ts">
 	import { EditableGridController } from '$lib/components/editable-grid/editable-grid-controller';
 	import { GridLineAxis, gridContext } from '$lib/components/editable-grid/editable-grid.model';
-	import {
-		EditableGridCellMergeDragInteraction,
-		editableGridCellMergeDragInteractionType,
-	} from '$lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-drag.interaction';
+	import { EditableGridCellMergeDragInteraction } from '$lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-drag.interaction';
 	import { calculateSplitPositionAndAxis } from '$lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split.utils';
 	import { getContext } from 'svelte';
 
@@ -12,9 +9,7 @@
 	overlay;
 
 	const grid = getContext<EditableGridController>(gridContext);
-	$: interaction = $grid.interactionStack.getByType<EditableGridCellMergeDragInteraction>(
-		editableGridCellMergeDragInteractionType,
-	);
+	$: interaction = $grid.interactionStack.getByType(EditableGridCellMergeDragInteraction);
 
 	$: cell = interaction?.data.fromCell;
 

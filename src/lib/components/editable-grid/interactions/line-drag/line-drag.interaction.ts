@@ -12,9 +12,8 @@ import {
 	calculateRelativePosition,
 	getNewLinePosition,
 } from '$lib/components/editable-grid/editable-grid.utils';
-import { InteractionBase } from '$lib/modules/interaction-stack/interaction-base';
-import type { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
 import type { DataTypeOf } from '@grekomp/wonder-event-emitter';
+import { Interaction } from '@grekomp/wonder-interaction-stack';
 
 export interface EditableGridLineDragInteractionData {
 	grid: EditableGridController;
@@ -22,24 +21,12 @@ export interface EditableGridLineDragInteractionData {
 	axis: GridLineAxis;
 }
 
-export const editableGridLineDragInteractionType = 'EditableGridLineDragInteraction' as const;
 const overlay: EditableGridOverlayData = {
 	targetType: OverlayTargetType.Container,
 	component: null,
 };
 
-export class EditableGridLineDragInteraction extends InteractionBase<
-	EditableGridLineDragInteraction,
-	typeof editableGridLineDragInteractionType,
-	EditableGridLineDragInteractionData
-> {
-	constructor(stack: InteractionStack, data: EditableGridLineDragInteractionData) {
-		super(stack, data, editableGridLineDragInteractionType);
-
-		this.onMouseMove = this.onMouseMove.bind(this);
-		this.onMouseUp = this.onMouseUp.bind(this);
-	}
-
+export class EditableGridLineDragInteraction extends Interaction<EditableGridLineDragInteractionData> {
 	_onStart() {
 		this.data.grid.events.container.mouseMove.on(this.onMouseMove);
 		this.data.grid.addOverlay(overlay);
@@ -51,7 +38,7 @@ export class EditableGridLineDragInteraction extends InteractionBase<
 		this.data.grid.removeOverlay(overlay);
 	}
 
-	onMouseMove(eventData: DataTypeOf<typeof gridEvents.container.mouseMove>) {
+	onMouseMove = (eventData: DataTypeOf<typeof gridEvents.container.mouseMove>) => {
 		const { grid, line, axis } = this.data;
 		const { gridContainer } = grid;
 
@@ -74,8 +61,9 @@ export class EditableGridLineDragInteraction extends InteractionBase<
 		});
 
 		grid.moveLine(line, newPosition);
-	}
-	onMouseUp() {
+	};
+
+	onMouseUp = () => {
 		this.complete();
-	}
+	};
 }

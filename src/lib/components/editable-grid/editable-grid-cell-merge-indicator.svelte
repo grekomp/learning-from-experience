@@ -7,10 +7,7 @@
 		gridContext,
 		type EditableGridCellData,
 	} from '$lib/components/editable-grid/editable-grid.model';
-	import {
-		EditableGridCellMergeDragInteraction,
-		editableGridCellMergeDragInteractionType,
-	} from '$lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-drag.interaction';
+	import { EditableGridCellMergeDragInteraction } from '$lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-drag.interaction';
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import { getContext } from 'svelte';
 
@@ -24,22 +21,23 @@
 		event.preventDefault();
 		event.stopPropagation();
 
-		const existingInteraction = interactionStack.getByType(
-			editableGridCellMergeDragInteractionType,
-		);
+		const existingInteraction = interactionStack.getByType(EditableGridCellMergeDragInteraction);
 		if (existingInteraction) existingInteraction.cancel();
 
-		const newInteraction = new EditableGridCellMergeDragInteraction(interactionStack, {
-			grid,
-			fromCell: cell,
-			startX: event.clientX,
-			startY: event.clientY,
+		const newInteraction = new EditableGridCellMergeDragInteraction({
+			stack: interactionStack,
+			initialData: {
+				grid,
+				fromCell: cell,
+				startX: event.clientX,
+				startY: event.clientY,
+			},
 		});
 		newInteraction.start();
 	};
 
 	const handleMouseUp = () => {
-		interactionStack.getByType(editableGridCellMergeDragInteractionType)?.complete();
+		interactionStack.getByType(EditableGridCellMergeDragInteraction)?.complete();
 	};
 </script>
 

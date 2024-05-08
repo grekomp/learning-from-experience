@@ -11,12 +11,12 @@ import {
 	type LineBounds,
 } from '$lib/components/editable-grid/editable-grid.model';
 import { getNewCell, invertAxis } from '$lib/components/editable-grid/editable-grid.utils';
-import { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
 import {
 	WonderEventEmitter,
 	bindEventDictionary,
 	type BoundEventDictionaryFor,
 } from '@grekomp/wonder-event-emitter';
+import { InteractionStack } from '@grekomp/wonder-interaction-stack';
 import { writable, type Writable } from 'svelte/store';
 
 export class EditableGridController {

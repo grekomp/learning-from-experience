@@ -12,9 +12,8 @@ import CellMergeCellsOverlay from '$lib/components/editable-grid/interactions/ce
 import CellMergeDragOverlay from '$lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-indicator-overlay.svelte';
 import { calculateSplitPositionAndAxis } from '$lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split.utils';
 import CellSplitIndicatorOverlay from '$lib/components/editable-grid/interactions/cell-merge-split-drag/cell-split-indicator-overlay.svelte';
-import { InteractionBase } from '$lib/modules/interaction-stack/interaction-base';
-import type { InteractionStack } from '$lib/modules/interaction-stack/interaction-stack';
 import type { DataTypeOf } from '@grekomp/wonder-event-emitter';
+import { Interaction } from '@grekomp/wonder-interaction-stack';
 
 export interface EditableGridCellMergeDragInteractionData {
 	grid: EditableGridController;
@@ -27,9 +26,6 @@ export interface EditableGridCellMergeDragInteractionData {
 		position: number;
 	} | null;
 }
-
-export const editableGridCellMergeDragInteractionType =
-	'EditableGridCellMergeDragInteraction' as const;
 
 /**
  * The distance that the mouse has to move from the initial position to start showing the split overlay.
@@ -56,20 +52,8 @@ const containerOverlay: EditableGridOverlayData = {
 	component: null,
 };
 
-export class EditableGridCellMergeDragInteraction extends InteractionBase<
-	EditableGridCellMergeDragInteraction,
-	typeof editableGridCellMergeDragInteractionType,
-	EditableGridCellMergeDragInteractionData
-> {
-	constructor(stack: InteractionStack, data: EditableGridCellMergeDragInteractionData) {
-		super(stack, data, editableGridCellMergeDragInteractionType);
-
-		this.onCellMouseEnter = this.onCellMouseEnter.bind(this);
-		this.onCellMouseMove = this.onCellMouseMove.bind(this);
-		this.onCellClick = this.onCellClick.bind(this);
-	}
-
-	setTargetCell(cell: EditableGridCellData) {
+export class EditableGridCellMergeDragInteraction extends Interaction<EditableGridCellMergeDragInteractionData> {
+	setTargetCell = (cell: EditableGridCellData) => {
 		if (cell === this.data.fromCell) {
 			this.data = { ...this.data, toCell: undefined };
 			return;
@@ -77,7 +61,7 @@ export class EditableGridCellMergeDragInteraction extends InteractionBase<
 
 		this.data = { ...this.data, toCell: cell };
 		this.data.grid.removeOverlay(cellSplitOverlay);
-	}
+	};
 
 	_onStart() {
 		this.data.grid.events.cell.mouseEnter.on(this.onCellMouseEnter);
@@ -117,10 +101,10 @@ export class EditableGridCellMergeDragInteraction extends InteractionBase<
 		this.data.grid.removeOverlay(mergeAreaOverlay);
 	}
 
-	onCellMouseEnter({ cell }: DataTypeOf<typeof gridEvents.cell.mouseEnter>) {
+	onCellMouseEnter = ({ cell }: DataTypeOf<typeof gridEvents.cell.mouseEnter>) => {
 		this.setTargetCell(cell);
-	}
-	onCellMouseMove({ cell, originalEvent }: DataTypeOf<typeof gridEvents.cell.mouseMove>) {
+	};
+	onCellMouseMove = ({ cell, originalEvent }: DataTypeOf<typeof gridEvents.cell.mouseMove>) => {
 		if (this.data.fromCell !== cell) return;
 
 		const { startX, startY, grid } = this.data;
@@ -151,8 +135,8 @@ export class EditableGridCellMergeDragInteraction extends InteractionBase<
 
 		if (this.data.grid.getOverlays().includes(cellSplitOverlay)) return;
 		this.data.grid.addOverlay(cellSplitOverlay);
-	}
-	onCellClick() {
+	};
+	onCellClick = () => {
 		this.complete();
-	}
+	};
 }

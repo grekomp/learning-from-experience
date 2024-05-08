@@ -10,10 +10,7 @@
 		getContainerSizeInAxis,
 		getNewLinePosition,
 	} from '$lib/components/editable-grid/editable-grid.utils';
-	import {
-		EditableGridLineDragInteraction,
-		editableGridLineDragInteractionType,
-	} from '$lib/components/editable-grid/interactions/line-drag/line-drag.interaction';
+	import { EditableGridLineDragInteraction } from '$lib/components/editable-grid/interactions/line-drag/line-drag.interaction';
 	import { getContext } from 'svelte';
 
 	export let overlay;
@@ -27,9 +24,7 @@
 
 	let interactionStack = grid.interactionStack;
 
-	$: dragInteraction = $interactionStack.getByType<EditableGridLineDragInteraction>(
-		editableGridLineDragInteractionType,
-	);
+	$: dragInteraction = $interactionStack.getByType(EditableGridLineDragInteraction);
 	$: isDragged =
 		dragInteraction?.data?.line?.name === lineBounds.line.name &&
 		dragInteraction?.data?.axis === axis;
@@ -37,18 +32,19 @@
 	const handleMouseDown = () => {
 		if (!axis) return;
 
-		const existingInteraction = interactionStack.getByType<EditableGridLineDragInteraction>(
-			editableGridLineDragInteractionType,
-		);
+		const existingInteraction = interactionStack.getByType(EditableGridLineDragInteraction);
 
 		if (existingInteraction) existingInteraction.cancel();
 
 		const gridLine = lineBounds.line;
 
-		const interaction = new EditableGridLineDragInteraction(grid.interactionStack, {
-			line: gridLine,
-			axis,
-			grid,
+		const interaction = new EditableGridLineDragInteraction({
+			stack: grid.interactionStack,
+			initialData: {
+				line: gridLine,
+				axis,
+				grid,
+			},
 		});
 		interaction.start();
 	};

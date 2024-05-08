@@ -5,7 +5,6 @@
 	import EditableGridOverlays from '$lib/components/editable-grid/editable-grid-overlays.svelte';
 	import { gridContext } from '$lib/components/editable-grid/editable-grid.model';
 	import { getCssGridTemplateFromGridLines } from '$lib/components/editable-grid/editable-grid.utils';
-	import '$lib/modules/interaction-stack/interaction-stack';
 	import { setContext } from 'svelte';
 
 	export let grid: EditableGridController;
