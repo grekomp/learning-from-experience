@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { InteractionStack } from './interaction-stack';
+	import type { InteractionStack } from '@grekomp/wonder-interaction-stack';
 
 	export let interactionStack: InteractionStack;
 </script>
@@ -10,7 +10,7 @@
 	{#each $interactionStack.getAll() as interaction}
 		<div>
 			<div>{interaction.id}</div>
-			<div>{interaction.interactionType}</div>
+			<div>{Object.getPrototypeOf(interaction).constructor.name}</div>
 			<div>{interaction.status}</div>
 		</div>
 	{/each}
