@@ -47,7 +47,7 @@
   "type": "module",
   "dependencies": {
     "@grekomp/wonder-event-emitter": "^0.1.2",
-    "@grekomp/wonder-interaction-stack": "../../packages/wonder-interaction-stack/",
+    "@grekomp/wonder-interaction-stack": "^0.0.1",
     "@supabase/supabase-js": "^2.39.3",
     "bits-ui": "^0.21.3",
     "clsx": "^2.1.0",
