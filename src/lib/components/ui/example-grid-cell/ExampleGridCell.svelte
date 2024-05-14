@@ -4,6 +4,6 @@
 	export let cell: EditableGridCellData;
 </script>
 
-<header class="bg-muted p-4 text-center text-muted-foreground">
+<header class="bg-muted/40 p-4 text-center text-muted-foreground">
 	{cell.title}
 </header>

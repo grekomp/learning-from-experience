@@ -9,7 +9,7 @@
 			<li>
 				<A
 					href="/"
-					class="block p-3 text-xl font-black text-white transition-colors hover:text-foreground focus:text-foreground"
+					class="block p-3 text-xl font-black text-primary transition-colors hover:text-foreground focus:text-foreground"
 					>Learning from Experience</A
 				>
 			</li>

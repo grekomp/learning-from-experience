@@ -31,7 +31,7 @@
 	style:grid-column-end={cell.bounds.col.end.name}
 	{...$$restProps}
 	class={cn(
-		'group relative m-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 overflow-auto rounded-sm bg-neutral-800',
+		'group relative m-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 overflow-auto rounded-sm bg-muted/20',
 		$$props.class,
 	)}
 	role="cell"
