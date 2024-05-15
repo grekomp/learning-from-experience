@@ -168,6 +168,7 @@ export interface GetNewCellProps {
 export function getNewCell({ bounds, splitFrom }: GetNewCellProps): EditableGridCellData {
 	return {
 		bounds,
+		component: splitFrom.component,
 		title: `Split from ${splitFrom.title}`,
 	};
 }
