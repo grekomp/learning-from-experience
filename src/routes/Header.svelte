@@ -14,9 +14,6 @@
 				>
 			</li>
 			<li>
-				<Navlink href="/about">About</Navlink>
-			</li>
-			<li>
 				<Navlink href="/posts">Posts</Navlink>
 			</li>
 			<li>
