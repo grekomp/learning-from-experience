@@ -1,4 +1,3 @@
-import { SignoutButton } from "$/lib/components/signout-button/signout-button.component";
 import { Button } from "$/lib/components/ui/button";
 import {
   Card,
@@ -7,22 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "$/lib/components/ui/card";
-import { createClient } from "$/lib/utils/supabase/supabase-server";
-import { db } from "$/server/db";
 import { Antenna, Grid, SquareStack } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const supabase = createClient();
-
-  const { data } = await supabase.auth.getUser();
-
-  const posts = await db.query.posts.findMany({
-    orderBy: (model, { desc }) => desc(model.created_at),
-  });
-
   return (
     <>
       <header className="mx-auto my-14 flex max-w-[80%] flex-col items-center gap-5 px-4 text-center">
@@ -34,10 +23,6 @@ export default async function HomePage() {
           my journey.
         </h2>
       </header>
-
-      <div className={"mx-auto mb-8 flex justify-center"}>
-        {data?.user ? <SignoutButton /> : <a href="/login">Sign in</a>}
-      </div>
 
       <div className="mx-auto mb-10 grid max-w-5xl gap-4 px-4 sm:grid-cols-2">
         <Card>
