@@ -103,7 +103,7 @@
 		pointer-events: none;
 
 		/* These styles will control the look of the outline */
-		outline: solid 3px deeppink;
+		outline: solid 3px hsl(var(--ring) / 0.7);
 		outline-offset: 2px;
 		border-radius: 5px;
 

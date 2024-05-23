@@ -95,8 +95,8 @@
 		on:mousedown={handleMouseDown}
 	>
 		<div
-			class="absolute bottom-0 left-0 right-0 top-0 my-auto h-[2px] transition-all group-hover:bg-neutral-900"
-			class:bg-neutral-900={isDragged}
+			class="absolute bottom-0 left-0 right-0 top-0 my-auto h-[2px] transition-all group-hover:bg-accent"
+			class:bg-accent={isDragged}
 		/>
 	</div>
 {:else}
@@ -115,8 +115,8 @@
 		on:mousedown={handleMouseDown}
 	>
 		<div
-			class="absolute bottom-0 left-0 right-0 top-0 mx-auto w-[2px] transition-all group-hover:bg-neutral-900"
-			class:bg-neutral-900={isDragged}
+			class="absolute bottom-0 left-0 right-0 top-0 mx-auto w-[2px] transition-all group-hover:bg-accent"
+			class:bg-accent={isDragged}
 		/>
 	</div>
 {/if}
