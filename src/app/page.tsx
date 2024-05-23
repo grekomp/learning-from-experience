@@ -1,6 +1,6 @@
 import { SignoutButton } from "$/lib/components/signout-button/signout-button.component";
+import { createClient } from "$/lib/utils/supabase/supabase-server";
 import { db } from "$/server/db";
-import { createClient } from "$/utils/supabase/supabase-server";
 
 export const dynamic = "force-dynamic";
 

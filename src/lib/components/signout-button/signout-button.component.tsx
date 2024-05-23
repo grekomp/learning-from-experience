@@ -1,5 +1,5 @@
 "use client";
-import { createClient } from "$/utils/supabase/supabase-client";
+import { createClient } from "$/lib/utils/supabase/supabase-client";
 
 export const SignoutButton = () => {
   const client = createClient();
