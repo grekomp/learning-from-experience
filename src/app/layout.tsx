@@ -1,3 +1,5 @@
+import { Footer } from "$/app/_components/footer.component";
+import { Header } from "$/app/_components/header.component";
 import "$/styles/globals.css";
 
 export const metadata = {
@@ -12,8 +14,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className="dark">
+      <body>
+        <div className="flex h-full flex-col items-stretch">
+          <Header />
+
+          <main className="grow">{children}</main>
+
+          <Footer />
+        </div>
+      </body>
     </html>
   );
 }
