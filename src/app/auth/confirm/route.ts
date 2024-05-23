@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/supabase-server";
+import { createClient } from "$/utils/supabase/supabase-server";
 import { type EmailOtpType } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
 
