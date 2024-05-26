@@ -12,6 +12,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@grekomp/wonder-event-emitter": "^0.1.2",
+    "@grekomp/wonder-interaction-stack": "^0.0.1",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-slot": "^1.0.2",
