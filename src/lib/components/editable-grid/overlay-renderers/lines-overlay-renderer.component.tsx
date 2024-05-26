@@ -8,9 +8,9 @@ import {
 } from "$/lib/components/editable-grid/editable-grid.context";
 import {
   GridLineAxis,
-  gridEndLine,
-  gridStartLine,
+  gridBoundingLines,
 } from "$/lib/components/editable-grid/editable-grid.model";
+import { isMiddleGridLine } from "$/lib/components/editable-grid/editable-grid.utils";
 import React, { useMemo } from "react";
 
 export interface LinesOverlayRendererProps {
@@ -26,10 +26,7 @@ export const LinesOverlayRenderer: React.FC<LinesOverlayRendererProps> = ({
   const useLineBounds = overlay.options?.useLineBounds ?? true;
   const target = useMemo(
     () =>
-      overlay.target ??
-      [...lines.col, ...lines.row].filter(
-        (line) => line.name !== gridStartLine && line.name !== gridEndLine,
-      ),
+      overlay.target ?? [...lines.col, ...lines.row].filter(isMiddleGridLine),
     [overlay.target, lines],
   );
 
@@ -47,9 +44,11 @@ export const LinesOverlayRenderer: React.FC<LinesOverlayRendererProps> = ({
               className="pointer-events-none relative"
               style={{
                 gridRowStart: line.name,
-                gridRowEnd: gridEndLine,
-                gridColumnStart: lineBounds?.start.name ?? gridStartLine,
-                gridColumnEnd: lineBounds?.end.name ?? gridEndLine,
+                gridRowEnd: gridBoundingLines.row.end,
+                gridColumnStart:
+                  lineBounds?.start.name ?? gridBoundingLines.col.start,
+                gridColumnEnd:
+                  lineBounds?.end.name ?? gridBoundingLines.col.end,
                 zIndex: overlay.zIndex,
               }}
             >
@@ -74,10 +73,11 @@ export const LinesOverlayRenderer: React.FC<LinesOverlayRendererProps> = ({
             key={axis + line.name}
             className="pointer-events-none relative"
             style={{
-              gridRowStart: lineBounds?.start.name ?? gridStartLine,
-              gridRowEnd: lineBounds?.end.name ?? gridEndLine,
+              gridRowStart:
+                lineBounds?.start.name ?? gridBoundingLines.row.start,
+              gridRowEnd: lineBounds?.end.name ?? gridBoundingLines.row.end,
               gridColumnStart: line.name,
-              gridColumnEnd: gridEndLine,
+              gridColumnEnd: gridBoundingLines.col.end,
               zIndex: overlay.zIndex,
             }}
           >

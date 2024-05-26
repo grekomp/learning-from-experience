@@ -5,10 +5,22 @@ import {
   defineEventDictionary,
 } from "@grekomp/wonder-event-emitter";
 
-export const gridContext = "editableGridContext";
+export const gridRowStartLine = "__row-start";
+export const gridRowEndLine = "__row-end";
+export const gridColStartLine = "__col-start";
+export const gridColEndLine = "__col-end";
 
-export const gridStartLine = "start";
-export const gridEndLine = "end";
+export const gridBoundingLines = {
+  row: {
+    start: gridRowStartLine,
+    end: gridRowEndLine,
+  },
+  col: {
+    start: gridColStartLine,
+    end: gridColEndLine,
+  },
+};
+
 export const gridLineSnapDistance = 10;
 export const gridMinCellWidth = 40;
 export const gridMinCellHeight = 40;
@@ -33,6 +45,9 @@ export interface EditableGridCellData {
 }
 
 export interface EditableGridLine {
+  /**
+   * Unique identifier of the line.
+   */
   name: string;
   /**
    * The position of the line in the grid.

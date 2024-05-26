@@ -1,10 +1,9 @@
 import {
   GridLineAxis,
-  gridEndLine,
+  gridBoundingLines,
   gridLineSnapDistance,
   gridMinCellHeight,
   gridMinCellWidth,
-  gridStartLine,
   type EditableGridCellBounds,
   type EditableGridCellData,
   type EditableGridLine,
@@ -18,7 +17,7 @@ export function getCssGridTemplateFromGridLines(
   let rowPositionAccumulator = 0;
   const rows = [...gridLines.row]
     .sort((a, b) => a.position - b.position)
-    .filter((row) => row.name !== gridStartLine)
+    .filter((row) => row.name !== gridBoundingLines.row.start)
     .map((row) => {
       const rowPosition = row.position * 100 - rowPositionAccumulator;
       rowPositionAccumulator += rowPosition;
@@ -29,7 +28,7 @@ export function getCssGridTemplateFromGridLines(
   let colPositionAccumulator = 0;
   const cols = [...gridLines.col]
     .sort((a, b) => a.position - b.position)
-    .filter((col) => col.name !== gridStartLine)
+    .filter((col) => col.name !== gridBoundingLines.col.start)
     .map((col) => {
       const colPosition = col.position * 100 - colPositionAccumulator;
       colPositionAccumulator += colPosition;
@@ -37,7 +36,7 @@ export function getCssGridTemplateFromGridLines(
     })
     .join(" ");
 
-  return `[${gridStartLine}] ${rows} / [${gridStartLine}] ${cols}`;
+  return `[${gridBoundingLines.row.start}] ${rows} / [${gridBoundingLines.col.start}] ${cols}`;
 }
 
 export function calculateRelativePosition(
@@ -256,7 +255,7 @@ export function getOuterBounds(
 
       return line;
     },
-    { name: gridEndLine, position: 1 },
+    { name: gridBoundingLines.row.end, position: 1 },
   );
   const rowEnd = rowLines.reduce(
     (acc, line) => {
@@ -264,7 +263,7 @@ export function getOuterBounds(
 
       return line;
     },
-    { name: gridStartLine, position: 0 },
+    { name: gridBoundingLines.row.start, position: 0 },
   );
 
   const colLines = bounds
@@ -282,7 +281,7 @@ export function getOuterBounds(
 
       return line;
     },
-    { name: gridEndLine, position: 1 },
+    { name: gridBoundingLines.col.end, position: 1 },
   );
   const colEnd = colLines.reduce(
     (acc, line) => {
@@ -290,7 +289,7 @@ export function getOuterBounds(
 
       return line;
     },
-    { name: gridStartLine, position: 0 },
+    { name: gridBoundingLines.col.start, position: 0 },
   );
 
   return {
@@ -303,4 +302,16 @@ export function getOuterBounds(
       end: colEnd,
     },
   };
+}
+
+/**
+ * Returns true if the line is not a grid start or end line.
+ */
+export function isMiddleGridLine(line: EditableGridLine) {
+  return (
+    line.name !== gridBoundingLines.row.start &&
+    line.name !== gridBoundingLines.row.end &&
+    line.name !== gridBoundingLines.col.start &&
+    line.name !== gridBoundingLines.col.end
+  );
 }

@@ -1,9 +1,8 @@
 import type { EditableGridOverlayData } from "$/lib/components/editable-grid/editable-grid-overlay.model";
 import {
   GridLineAxis,
-  gridEndLine,
+  gridBoundingLines,
   gridEvents,
-  gridStartLine,
   type EditableGridCellBounds,
   type EditableGridCellData,
   type EditableGridLine,
@@ -126,8 +125,14 @@ export class EditableGridController {
     if (!lineAxis) return null;
 
     const inverseAxis = invertAxis(lineAxis);
-    const inverseAxisStartLine = this.findLine(gridStartLine, inverseAxis);
-    const inverseAxisEndLine = this.findLine(gridEndLine, inverseAxis);
+    const inverseAxisStartLine = this.findLine(
+      gridBoundingLines[inverseAxis].start,
+      inverseAxis,
+    );
+    const inverseAxisEndLine = this.findLine(
+      gridBoundingLines[inverseAxis].end,
+      inverseAxis,
+    );
 
     if (!inverseAxisStartLine || !inverseAxisEndLine) return null;
 
