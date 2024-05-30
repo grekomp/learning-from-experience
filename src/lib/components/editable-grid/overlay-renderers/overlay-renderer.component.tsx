@@ -3,6 +3,7 @@ import {
   type EditableGridOverlayData,
 } from "$/lib/components/editable-grid/editable-grid-overlay.model";
 import { CellsOverlayRenderer } from "$/lib/components/editable-grid/overlay-renderers/cells-overlay-renderer.component";
+import { ContainerOverlayRenderer } from "$/lib/components/editable-grid/overlay-renderers/container-overlay-renderer.component";
 import { LinesOverlayRenderer } from "$/lib/components/editable-grid/overlay-renderers/lines-overlay-renderer.component";
 import { useMemo } from "react";
 
@@ -33,7 +34,9 @@ export const OverlayRenderer: React.FC<OverlayRendererProps> = ({
       {/* TODO */}
       {overlayWithDefaults.targetType === OverlayTargetType.Areas && null}
       {/* TODO */}
-      {overlayWithDefaults.targetType === OverlayTargetType.Container && null}
+      {overlayWithDefaults.targetType === OverlayTargetType.Container && (
+        <ContainerOverlayRenderer overlay={overlayWithDefaults} />
+      )}
       {overlayWithDefaults.targetType === OverlayTargetType.Custom &&
         (() => {
           const Component = overlayWithDefaults.component;
