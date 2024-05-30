@@ -91,8 +91,7 @@ export const LineDragOverlay = ({ line, lineBounds }: LineOverlayProps) => {
         <div
           className="group absolute left-0 right-0 top-[calc(var(--grid-line-area)/-2)] h-[--grid-line-area] cursor-row-resize select-none [--grid-line-area:10px]"
           role="separator"
-          // TODO: Calculate real aria values
-          aria-valuenow={34}
+          aria-valuenow={line.position * 100}
           aria-valuemin={0}
           aria-valuemax={100}
           aria-orientation="horizontal"
@@ -111,8 +110,7 @@ export const LineDragOverlay = ({ line, lineBounds }: LineOverlayProps) => {
         <div
           className="group pointer-events-auto absolute bottom-0 left-[calc(var(--grid-line-area)/-2)] top-0 w-[--grid-line-area] cursor-col-resize select-none [--grid-line-area:10px]"
           role="separator"
-          // TODO: Calculate real aria values
-          aria-valuenow={34}
+          aria-valuenow={line.position * 100}
           aria-valuemin={0}
           aria-valuemax={100}
           aria-orientation="vertical"
