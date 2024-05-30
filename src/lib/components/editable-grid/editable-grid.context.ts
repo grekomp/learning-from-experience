@@ -6,11 +6,21 @@ export const EditableGridContext = createContext<EditableGridController | null>(
   null,
 );
 
-export function useGrid() {
+export interface UseGridProps {
+  /**
+   * If true, the component will re-render when the grid data (cells, lines) changes.
+   *
+   * @default false
+   */
+  subscribe?: boolean;
+}
+export function useGrid({ subscribe = false }: UseGridProps = {}) {
   const triggerRender = useTriggerRender();
   const grid = useContext(EditableGridContext);
 
-  useEffect(() => grid?.subscribe(triggerRender), [grid, triggerRender]);
+  useEffect(() => {
+    if (subscribe) return grid?.subscribe(triggerRender);
+  }, [grid, triggerRender, subscribe]);
 
   // TODO: How do I handle this elegantly?
   if (!grid) throw new Error("EditableGridContext not found");
