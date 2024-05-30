@@ -11,6 +11,7 @@ import {
 import { CellMergeCellsOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-cells-overlay.component";
 import { CellMergeIndicatorOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-indicator-overlay.component";
 import { calculateSplitPositionAndAxis } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split.utils";
+import { CellSplitIndicatorOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-split-indicator-overlay.component";
 import type { DataTypeOf } from "@grekomp/wonder-event-emitter";
 import { Interaction } from "@grekomp/wonder-interaction-stack";
 
@@ -38,7 +39,7 @@ const mergeAreaOverlay: EditableGridOverlayData = {
 };
 const cellSplitOverlay: EditableGridOverlayData = {
   targetType: OverlayTargetType.Custom,
-  component: () => null, // CellSplitIndicatorOverlay,
+  component: CellSplitIndicatorOverlay,
   zIndex: 20,
 };
 const cellsOverlay: EditableGridOverlayData = {
