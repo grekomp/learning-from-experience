@@ -30,6 +30,17 @@ export const OverlayRenderer: React.FC<OverlayRendererProps> = ({
       {overlayWithDefaults.targetType === OverlayTargetType.Lines && (
         <LinesOverlayRenderer overlay={overlayWithDefaults} />
       )}
+      {/* TODO */}
+      {overlayWithDefaults.targetType === OverlayTargetType.Areas && null}
+      {/* TODO */}
+      {overlayWithDefaults.targetType === OverlayTargetType.Container && null}
+      {overlayWithDefaults.targetType === OverlayTargetType.Custom &&
+        (() => {
+          const Component = overlayWithDefaults.component;
+          if (!Component) return null;
+
+          return <Component overlay={overlayWithDefaults} />;
+        })()}
     </div>
   );
 };

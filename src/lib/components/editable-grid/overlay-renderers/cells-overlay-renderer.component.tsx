@@ -53,7 +53,7 @@ export const CellsOverlayRenderer: React.FC<CellsOverlayRendererProps> = ({
             grid?.events.cell.mouseLeave.emit({ cell, originalEvent: event })
           }
         >
-          <Component />
+          <Component overlay={overlay} cell={cell} />
         </div>
       ))}
     </>

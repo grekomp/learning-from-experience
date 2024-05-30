@@ -16,7 +16,7 @@ export type EditableGridOverlayData = {
 } & (
   | {
       targetType: OverlayTargetType.Cells;
-      component?: React.ComponentType;
+      component?: React.ComponentType<CellOverlayProps>;
       target?: Readonly<EditableGridCellData[]>;
     }
   | {
@@ -34,17 +34,17 @@ export type EditableGridOverlayData = {
     }
   | {
       targetType: OverlayTargetType.Areas;
-      component?: React.ComponentType;
+      component?: React.ComponentType<AreaOverlayProps>;
       target: Readonly<EditableGridCellBounds[]>;
     }
   | {
       targetType: OverlayTargetType.Container;
-      component?: React.ComponentType;
+      component?: React.ComponentType<ContainerOverlayProps>;
       target?: never;
     }
   | {
       targetType: OverlayTargetType.Custom;
-      component?: React.ComponentType;
+      component?: React.ComponentType<CustomOverlayProps>;
       target?: never;
     }
 );
@@ -70,6 +70,10 @@ export interface AreaOverlayProps {
 
 export interface ContainerOverlayProps {
   overlay: EditableGridOverlayDataFor<OverlayTargetType.Container>;
+}
+
+export interface CustomOverlayProps {
+  overlay: EditableGridOverlayDataFor<OverlayTargetType.Custom>;
 }
 
 export enum OverlayTargetType {

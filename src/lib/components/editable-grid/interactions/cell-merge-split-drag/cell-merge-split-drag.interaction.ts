@@ -8,6 +8,8 @@ import {
   type GridLineAxis,
   type gridEvents,
 } from "$/lib/components/editable-grid/editable-grid.model";
+import { CellMergeCellsOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-cells-overlay.component";
+import { CellMergeIndicatorOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-indicator-overlay.component";
 import { calculateSplitPositionAndAxis } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split.utils";
 import type { DataTypeOf } from "@grekomp/wonder-event-emitter";
 import { Interaction } from "@grekomp/wonder-interaction-stack";
@@ -30,7 +32,7 @@ export interface EditableGridCellMergeDragInteractionData {
 const axisAlignedDistanceThreshold = 20;
 const mergeAreaOverlay: EditableGridOverlayData = {
   targetType: OverlayTargetType.Custom,
-  component: () => null, // CellMergeDragOverlay,
+  component: CellMergeIndicatorOverlay,
   zIndex: 20,
   pointerEvents: "none",
 };
@@ -41,12 +43,11 @@ const cellSplitOverlay: EditableGridOverlayData = {
 };
 const cellsOverlay: EditableGridOverlayData = {
   targetType: OverlayTargetType.Cells,
-  component: () => null, // CellMergeCellsOverlay,
+  component: CellMergeCellsOverlay,
   zIndex: 10,
 };
 const containerOverlay: EditableGridOverlayData = {
   targetType: OverlayTargetType.Container,
-  component: null,
 };
 
 export class EditableGridCellMergeDragInteraction extends Interaction<EditableGridCellMergeDragInteractionData> {

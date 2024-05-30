@@ -7,6 +7,7 @@ import {
   gridBoundingLines,
   type EditableGridCellData,
 } from "$/lib/components/editable-grid/editable-grid.model";
+import { CellMergeSplitGripOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-grip-overlay.component";
 import { LineDragOverlay } from "$/lib/components/editable-grid/interactions/line-drag/line-drag-overlay.component";
 
 const colLines = {
@@ -129,6 +130,10 @@ const gridController = new EditableGridController({
     {
       targetType: OverlayTargetType.Lines,
       component: LineDragOverlay,
+    },
+    {
+      targetType: OverlayTargetType.Cells,
+      component: CellMergeSplitGripOverlay,
     },
   ],
 });
