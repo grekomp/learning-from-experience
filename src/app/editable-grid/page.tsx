@@ -2,12 +2,15 @@
 import { EditableGridController } from "$/lib/components/editable-grid/editable-grid-controller";
 import { OverlayTargetType } from "$/lib/components/editable-grid/editable-grid-overlay.model";
 import { EditableGrid } from "$/lib/components/editable-grid/editable-grid.component";
-import { type EditableGridCellData } from "$/lib/components/editable-grid/editable-grid.model";
+import {
+  gridBoundingLines,
+  type EditableGridCellData,
+} from "$/lib/components/editable-grid/editable-grid.model";
 import { LineDragOverlay } from "$/lib/components/editable-grid/interactions/line-drag/line-drag-overlay.component";
 
 const colLines = {
   start: {
-    name: "start",
+    name: gridBoundingLines.col.start,
     position: 0,
   },
   mid1: {
@@ -23,14 +26,14 @@ const colLines = {
     position: 0.75,
   },
   end: {
-    name: "end",
+    name: gridBoundingLines.col.end,
     position: 1,
   },
 };
 
 const rowLines = {
   start: {
-    name: "start",
+    name: gridBoundingLines.row.start,
     position: 0,
   },
   mid1: {
@@ -50,7 +53,7 @@ const rowLines = {
     position: 0.9,
   },
   end: {
-    name: "end",
+    name: gridBoundingLines.row.end,
     position: 1,
   },
 };
