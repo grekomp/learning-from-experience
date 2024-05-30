@@ -1,3 +1,4 @@
+import "$/app/_components/_suppress-ref-warning";
 import { Footer } from "$/app/_components/footer.component";
 import { Header } from "$/app/_components/header.component";
 import "$/styles/globals.css";

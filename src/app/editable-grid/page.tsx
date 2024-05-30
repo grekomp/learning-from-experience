@@ -1,4 +1,5 @@
 "use client";
+import "$/app/_components/_suppress-ref-warning";
 import { EditableGridController } from "$/lib/components/editable-grid/editable-grid-controller";
 import { OverlayTargetType } from "$/lib/components/editable-grid/editable-grid-overlay.model";
 import { EditableGrid } from "$/lib/components/editable-grid/editable-grid.component";
