@@ -129,6 +129,7 @@ const gridController = new EditableGridController({
   overlays: [
     {
       targetType: OverlayTargetType.Lines,
+      zIndex: 1,
       component: LineDragOverlay,
     },
     {
