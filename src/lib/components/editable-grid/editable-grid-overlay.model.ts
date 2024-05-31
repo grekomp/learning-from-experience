@@ -1,7 +1,7 @@
 import type {
   EditableGridCellBounds,
   EditableGridCellData,
-  EditableGridLine,
+  EditableGridLineId,
   LineBounds,
 } from "$/lib/components/editable-grid/editable-grid.model";
 
@@ -22,7 +22,7 @@ export type EditableGridOverlayData = {
     }
   | {
       targetType: OverlayTargetType.Lines;
-      target?: Readonly<EditableGridLine[]>;
+      target?: Readonly<EditableGridLineId[]>;
       component?: React.ComponentType<LineOverlayProps>;
       options?: {
         /**
@@ -55,7 +55,7 @@ export type EditableGridOverlayDataFor<TargetType extends OverlayTargetType> =
 
 export interface LineOverlayProps {
   overlay: EditableGridOverlayDataFor<OverlayTargetType.Lines>;
-  line: EditableGridLine;
+  lineName: EditableGridLineId;
   lineBounds: LineBounds | null;
 }
 

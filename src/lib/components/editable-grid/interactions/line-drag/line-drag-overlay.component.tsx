@@ -12,9 +12,9 @@ import { EditableGridLineDragInteraction } from "$/lib/components/editable-grid/
 import { cn } from "$/lib/utils/shadcnui";
 import { useStore } from "$/lib/utils/store/useStore";
 
-export const LineDragOverlay = ({ line, lineBounds }: LineOverlayProps) => {
+export const LineDragOverlay = ({ lineName, lineBounds }: LineOverlayProps) => {
   const grid = useGrid();
-
+  const line = grid.findLine(lineName);
   const axis = lineBounds?.line ? grid.findLineAxis(lineBounds.line) : null;
 
   const interactionStack = useStore(
@@ -30,7 +30,7 @@ export const LineDragOverlay = ({ line, lineBounds }: LineOverlayProps) => {
     dragInteraction?.data?.axis === axis;
 
   const handleMouseDown = () => {
-    if (!axis) return;
+    if (!line || !axis) return;
 
     const existingInteraction = interactionStack.getByType(
       EditableGridLineDragInteraction,
@@ -50,7 +50,7 @@ export const LineDragOverlay = ({ line, lineBounds }: LineOverlayProps) => {
   };
 
   const handleLineKeyboardMove = (event: React.KeyboardEvent) => {
-    if (!axis) return;
+    if (!line || !axis) return;
     if (!grid.gridContainer) return;
     if (
       axis === GridLineAxis.Col &&
@@ -84,6 +84,8 @@ export const LineDragOverlay = ({ line, lineBounds }: LineOverlayProps) => {
 
     grid.moveLine(line, newPosition);
   };
+
+  if (!line || !axis) return null;
 
   return (
     <>
