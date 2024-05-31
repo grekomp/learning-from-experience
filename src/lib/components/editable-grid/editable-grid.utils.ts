@@ -1,4 +1,5 @@
 import {
+  type EditableGridLineId,
   GridLineAxis,
   gridBoundingLines,
   gridLineSnapDistance,
@@ -308,10 +309,13 @@ export function getOuterBounds(
  * Returns true if the line is not a grid start or end line.
  */
 export function isMiddleGridLine(line: EditableGridLine) {
+  return isMiddleGridLineName(line.name);
+}
+export function isMiddleGridLineName(lineName: EditableGridLineId) {
   return (
-    line.name !== gridBoundingLines.row.start &&
-    line.name !== gridBoundingLines.row.end &&
-    line.name !== gridBoundingLines.col.start &&
-    line.name !== gridBoundingLines.col.end
+    lineName !== gridBoundingLines.row.start &&
+    lineName !== gridBoundingLines.row.end &&
+    lineName !== gridBoundingLines.col.start &&
+    lineName !== gridBoundingLines.col.end
   );
 }
