@@ -1,8 +1,8 @@
-import { EditableGridCell } from "$/lib/components/editable-grid/editable-grid-cell.component";
 import { type EditableGridController } from "$/lib/components/editable-grid/editable-grid-controller";
 import { EditableGridContext } from "$/lib/components/editable-grid/editable-grid.context";
 import { getCssGridTemplateFromGridLines } from "$/lib/components/editable-grid/editable-grid.utils";
-import { OverlayRenderer } from "$/lib/components/editable-grid/overlay-renderers/overlay-renderer.component";
+import { GridCellsRenderer } from "$/lib/components/editable-grid/gric-cells-renderer.component";
+import { GridOverlaysRenderer } from "$/lib/components/editable-grid/grid-overlays-renderer";
 import { useStore } from "$/lib/utils/store/useStore";
 
 export interface EditableGridProps {
@@ -10,7 +10,7 @@ export interface EditableGridProps {
 }
 
 export const EditableGrid: React.FC<EditableGridProps> = ({ grid }) => {
-  useStore(grid, null);
+  useStore(grid, grid);
 
   return (
     <EditableGridContext.Provider value={grid}>
@@ -26,13 +26,8 @@ export const EditableGrid: React.FC<EditableGridProps> = ({ grid }) => {
         role="grid"
         tabIndex={0}
       >
-        {grid.getCells().map((cell, index) => (
-          <EditableGridCell key={index} cell={cell} />
-        ))}
-
-        {grid.getOverlays().map((overlay, index) => (
-          <OverlayRenderer key={index} overlay={overlay} />
-        ))}
+        <GridCellsRenderer />
+        <GridOverlaysRenderer />
       </div>
     </EditableGridContext.Provider>
   );
