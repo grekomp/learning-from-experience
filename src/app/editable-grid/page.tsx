@@ -16,15 +16,15 @@ const colLines = {
     position: 0,
   },
   mid1: {
-    name: "mid1",
+    name: "col_mid1",
     position: 0.25,
   },
   mid2: {
-    name: "mid2",
+    name: "col_mid2",
     position: 0.5,
   },
   mid3: {
-    name: "mid3",
+    name: "col_mid3",
     position: 0.75,
   },
   end: {
@@ -39,19 +39,19 @@ const rowLines = {
     position: 0,
   },
   mid1: {
-    name: "mid1",
+    name: "row_mid1",
     position: 0.4,
   },
   mid2: {
-    name: "mid2",
+    name: "row_mid2",
     position: 0.5,
   },
   mid3: {
-    name: "mid3",
+    name: "row_mid3",
     position: 0.7,
   },
   mid4: {
-    name: "mid4",
+    name: "row_mid4",
     position: 0.9,
   },
   end: {
