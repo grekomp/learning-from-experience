@@ -1,6 +1,7 @@
 import { type EditableGridController } from "$/lib/components/editable-grid/editable-grid-controller";
+import { useStore } from "$/lib/utils/store/useStore";
 import { useTriggerRender } from "$/lib/utils/trigger-render";
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 
 export const EditableGridContext = createContext<EditableGridController | null>(
   null,
@@ -39,9 +40,23 @@ export function useGridCells() {
 
 export function useGridLines() {
   const triggerRender = useTriggerRender();
-  const grid = useContext(EditableGridContext);
+  const grid = useGrid();
+  const linesRef = useRef({ ...grid.getLines() });
 
-  useEffect(() => grid?.lines.subscribe(triggerRender), [grid, triggerRender]);
+  useEffect(
+    () =>
+      grid.lines.subscribe(() => {
+        linesRef.current = { ...grid.getLines() };
+        triggerRender();
+      }),
+    [grid, triggerRender],
+  );
 
-  return grid?.getLines() ?? { row: [], col: [] };
+  return linesRef.current;
+}
+
+export function useGridOverlays() {
+  const grid = useGrid();
+
+  return useStore(grid.overlays, grid.getOverlays());
 }
