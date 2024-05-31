@@ -1,7 +1,7 @@
 import { type EditableGridController } from "$/lib/components/editable-grid/editable-grid-controller";
 import { EditableGridContext } from "$/lib/components/editable-grid/editable-grid.context";
 import { getCssGridTemplateFromGridLines } from "$/lib/components/editable-grid/editable-grid.utils";
-import { GridCellsRenderer } from "$/lib/components/editable-grid/gric-cells-renderer.component";
+import { GridCellsRenderer } from "$/lib/components/editable-grid/grid-cells-renderer.component";
 import { GridOverlaysRenderer } from "$/lib/components/editable-grid/grid-overlays-renderer";
 import { useStore } from "$/lib/utils/store/useStore";
 

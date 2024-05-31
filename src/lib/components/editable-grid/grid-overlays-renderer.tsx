@@ -1,14 +1,14 @@
-import { useGrid } from "$/lib/components/editable-grid/editable-grid.context";
+import { useGridOverlays } from "$/lib/components/editable-grid/editable-grid.context";
 import { OverlayRenderer } from "$/lib/components/editable-grid/overlay-renderers/overlay-renderer.component";
 import { memo } from "react";
 
 export const GridOverlaysRenderer = memo(function GridOverlaysRenderer() {
-  const grid = useGrid();
+  const overlays = useGridOverlays();
 
   return (
     <>
-      {grid.getOverlays().map((overlay, index) => (
-        <OverlayRenderer key={index} overlay={overlay} />
+      {overlays.map((overlay) => (
+        <OverlayRenderer key={overlay.id} overlay={overlay} />
       ))}
     </>
   );
