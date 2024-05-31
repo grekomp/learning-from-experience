@@ -1,7 +1,7 @@
 import { type EditableGridController } from "$/lib/components/editable-grid/editable-grid-controller";
 import { useStore } from "$/lib/utils/store/useStore";
 import { useTriggerRender } from "$/lib/utils/trigger-render";
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 export const EditableGridContext = createContext<EditableGridController | null>(
   null,
@@ -23,8 +23,8 @@ export function useGrid({ subscribe = false }: UseGridProps = {}) {
     if (subscribe) return grid?.subscribe(triggerRender);
   }, [grid, triggerRender, subscribe]);
 
-  // TODO: How do I handle this elegantly?
-  if (!grid) throw new Error("EditableGridContext not found");
+  if (!grid)
+    throw new Error("useGrid was called outside of EditableGridContext");
 
   return grid;
 }
@@ -39,20 +39,35 @@ export function useGridCells() {
 }
 
 export function useGridLines() {
-  const triggerRender = useTriggerRender();
   const grid = useGrid();
-  const linesRef = useRef({ ...grid.getLines() });
+  const [lines, setLines] = useState({ ...grid.getLines() });
 
   useEffect(
     () =>
-      grid.lines.subscribe(() => {
-        linesRef.current = { ...grid.getLines() };
-        triggerRender();
+      grid.lines.subscribe((updatedLines) => {
+        setLines({ ...updatedLines });
       }),
-    [grid, triggerRender],
+    [grid],
   );
 
-  return linesRef.current;
+  return lines;
+}
+
+export function useGridLineNames() {
+  const grid = useGrid();
+  const [lineNames, setLineNames] = useState([...grid.getAllLineNames()]);
+
+  useEffect(() => {
+    return grid.lines.subscribe(() => {
+      const updatedLineNames = grid.getAllLineNames();
+      if (JSON.stringify(updatedLineNames) === JSON.stringify(lineNames))
+        return;
+
+      setLineNames([...updatedLineNames]);
+    });
+  }, [grid, lineNames]);
+
+  return lineNames;
 }
 
 export function useGridOverlays() {

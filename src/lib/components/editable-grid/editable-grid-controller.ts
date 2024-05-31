@@ -27,6 +27,9 @@ export class EditableGridController {
   getLines(): Readonly<EditableGridLines> {
     return this.__lines;
   }
+  getAllLineNames(): string[] {
+    return [...this.__lines.col, ...this.__lines.row].map((line) => line.name);
+  }
 
   private __cells: EditableGridCellData[];
   cells: WritableStore<EditableGridCellData[]>;
