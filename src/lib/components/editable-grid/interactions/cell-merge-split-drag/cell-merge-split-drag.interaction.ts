@@ -32,22 +32,26 @@ export interface EditableGridCellMergeDragInteractionData {
  */
 const axisAlignedDistanceThreshold = 20;
 const mergeAreaOverlay: EditableGridOverlayData = {
+  id: crypto.randomUUID(),
   targetType: OverlayTargetType.Custom,
   component: CellMergeIndicatorOverlay,
   zIndex: 20,
   pointerEvents: "none",
 };
 const cellSplitOverlay: EditableGridOverlayData = {
+  id: crypto.randomUUID(),
   targetType: OverlayTargetType.Custom,
   component: CellSplitIndicatorOverlay,
   zIndex: 20,
 };
 const cellsOverlay: EditableGridOverlayData = {
+  id: crypto.randomUUID(),
   targetType: OverlayTargetType.Cells,
   component: CellMergeCellsOverlay,
   zIndex: 10,
 };
 const containerOverlay: EditableGridOverlayData = {
+  id: crypto.randomUUID(),
   targetType: OverlayTargetType.Container,
 };
 

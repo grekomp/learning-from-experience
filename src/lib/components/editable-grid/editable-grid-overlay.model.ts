@@ -6,6 +6,7 @@ import type {
 } from "$/lib/components/editable-grid/editable-grid.model";
 
 export type EditableGridOverlayData = {
+  id: string;
   zIndex?: number;
   /**
    * Controls the value of the CSS property `pointer-events` on the overlay element.

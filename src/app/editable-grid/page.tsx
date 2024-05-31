@@ -128,11 +128,13 @@ const gridController = new EditableGridController({
   },
   overlays: [
     {
+      id: crypto.randomUUID(),
       targetType: OverlayTargetType.Lines,
       zIndex: 1,
       component: LineDragOverlay,
     },
     {
+      id: crypto.randomUUID(),
       targetType: OverlayTargetType.Cells,
       component: CellMergeSplitGripOverlay,
     },

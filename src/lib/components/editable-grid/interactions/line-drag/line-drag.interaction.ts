@@ -22,6 +22,7 @@ export interface EditableGridLineDragInteractionData {
 }
 
 const overlay: EditableGridOverlayData = {
+  id: crypto.randomUUID(),
   targetType: OverlayTargetType.Container,
 };
 
