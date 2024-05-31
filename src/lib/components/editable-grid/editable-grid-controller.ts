@@ -161,8 +161,8 @@ export class EditableGridController {
 
     return {
       line,
-      start,
-      end,
+      start: start.name,
+      end: end.name,
     };
   }
   // #endregion Managing lines

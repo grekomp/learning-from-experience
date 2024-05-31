@@ -44,11 +44,14 @@ export interface EditableGridCellData {
   component?: React.Component;
 }
 
+// TODO: Replace with branded types
+export type EditableGridLineId = string;
+
 export interface EditableGridLine {
   /**
    * Unique identifier of the line.
    */
-  name: string;
+  name: EditableGridLineId;
   /**
    * The position of the line in the grid.
    * Value between 0 (top/left) and 1 (bottom/right).
@@ -63,8 +66,8 @@ export interface EditableGridLines {
 
 export interface LineBounds {
   line: EditableGridLine;
-  start: EditableGridLine;
-  end: EditableGridLine;
+  start: EditableGridLineId;
+  end: EditableGridLineId;
 }
 
 export enum GridLineAxis {
