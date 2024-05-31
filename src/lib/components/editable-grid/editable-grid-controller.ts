@@ -77,8 +77,11 @@ export class EditableGridController {
   }
 
   // #region Managing lines
-  findLine(lineName: string, axis: GridLineAxis) {
-    return this.__lines[axis].find((line) => line.name === lineName);
+  findLine(lineName: string) {
+    return (
+      this.__lines.col.find((line) => line.name === lineName) ??
+      this.__lines.row.find((line) => line.name === lineName)
+    );
   }
   findLineAxis(line: EditableGridLine): GridLineAxis | null {
     if (this.__lines.row.includes(line)) return GridLineAxis.Row;
@@ -127,11 +130,9 @@ export class EditableGridController {
     const inverseAxis = invertAxis(lineAxis);
     const inverseAxisStartLine = this.findLine(
       gridBoundingLines[inverseAxis].start,
-      inverseAxis,
     );
     const inverseAxisEndLine = this.findLine(
       gridBoundingLines[inverseAxis].end,
-      inverseAxis,
     );
 
     if (!inverseAxisStartLine || !inverseAxisEndLine) return null;
