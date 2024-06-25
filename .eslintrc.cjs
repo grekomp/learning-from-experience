@@ -1,31 +1,59 @@
-/** @type { import("eslint").Linter.Config } */
-module.exports = {
-	root: true,
-	extends: [
-		'eslint:recommended',
-		'plugin:@typescript-eslint/recommended',
-		'plugin:svelte/recommended',
-		'prettier'
-	],
-	parser: '@typescript-eslint/parser',
-	plugins: ['@typescript-eslint'],
-	parserOptions: {
-		sourceType: 'module',
-		ecmaVersion: 2020,
-		extraFileExtensions: ['.svelte']
-	},
-	env: {
-		browser: true,
-		es2017: true,
-		node: true
-	},
-	overrides: [
-		{
-			files: ['*.svelte'],
-			parser: 'svelte-eslint-parser',
-			parserOptions: {
-				parser: '@typescript-eslint/parser'
-			}
-		}
-	]
+/** @type {import("eslint").Linter.Config} */
+const config = {
+  parser: "@typescript-eslint/parser",
+  parserOptions: {
+    project: true,
+  },
+  plugins: ["@typescript-eslint", "drizzle"],
+  extends: [
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended-type-checked",
+    "plugin:@typescript-eslint/stylistic-type-checked",
+  ],
+  rules: {
+    "@typescript-eslint/array-type": "off",
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/consistent-type-imports": [
+      "warn",
+      {
+        prefer: "type-imports",
+        fixStyle: "inline-type-imports",
+      },
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        argsIgnorePattern: "^_",
+      },
+    ],
+    "@typescript-eslint/require-await": "off",
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        checksVoidReturn: {
+          attributes: false,
+        },
+      },
+    ],
+    "@typescript-eslint/prefer-nullish-coalescing": [
+      "warn",
+      {
+        ignoreConditionalTests: true,
+        ignoreMixedLogicalExpressions: true,
+      },
+    ],
+    "drizzle/enforce-delete-with-where": [
+      "error",
+      {
+        drizzleObjectName: ["db"],
+      },
+    ],
+    "drizzle/enforce-update-with-where": [
+      "error",
+      {
+        drizzleObjectName: ["db"],
+      },
+    ],
+  },
 };
+module.exports = config;
