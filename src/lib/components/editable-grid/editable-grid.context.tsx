@@ -1,7 +1,7 @@
 import { type EditableGridController } from "$/lib/components/editable-grid/editable-grid-controller";
-import { useStore } from "$/lib/utils/store/useStore";
+import { useListenable } from "$/lib/utils/emitter-listenable/use-listenable";
 import { useTriggerRender } from "$/lib/utils/trigger-render";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useMemo } from "react";
 
 export const EditableGridContext = createContext<EditableGridController | null>(
   null,
@@ -20,7 +20,7 @@ export function useGrid({ subscribe = false }: UseGridProps = {}) {
   const grid = useContext(EditableGridContext);
 
   useEffect(() => {
-    if (subscribe) return grid?.subscribe(triggerRender);
+    if (subscribe) return grid?.onChange.on(triggerRender);
   }, [grid, triggerRender, subscribe]);
 
   if (!grid)
@@ -30,48 +30,28 @@ export function useGrid({ subscribe = false }: UseGridProps = {}) {
 }
 
 export function useGridCells() {
-  const triggerRender = useTriggerRender();
-  const grid = useContext(EditableGridContext);
-
-  useEffect(() => grid?.cells.subscribe(triggerRender), [grid, triggerRender]);
-
-  return grid?.getCells() ?? [];
+  const grid = useGrid();
+  return useListenable(grid.onCellsChange, grid.getCells());
 }
 
 export function useGridLines() {
   const grid = useGrid();
-  const [lines, setLines] = useState({ ...grid.getLines() });
-
-  useEffect(
-    () =>
-      grid.lines.subscribe((updatedLines) => {
-        setLines({ ...updatedLines });
-      }),
-    [grid],
-  );
-
-  return lines;
+  return useListenable(grid.onLinesChange, grid.getLines());
 }
 
 export function useGridLineNames() {
   const grid = useGrid();
-  const [lineNames, setLineNames] = useState([...grid.getAllLineNames()]);
+  const lines = useGridLines();
 
-  useEffect(() => {
-    return grid.lines.subscribe(() => {
-      const updatedLineNames = grid.getAllLineNames();
-      if (JSON.stringify(updatedLineNames) === JSON.stringify(lineNames))
-        return;
-
-      setLineNames([...updatedLineNames]);
-    });
-  }, [grid, lineNames]);
+  const lineNames = useMemo(() => {
+    lines;
+    return grid.getAllLineNames();
+  }, [grid, lines]);
 
   return lineNames;
 }
 
 export function useGridOverlays() {
   const grid = useGrid();
-
-  return useStore(grid.overlays, grid.getOverlays());
+  return useListenable(grid.onOverlaysChange, grid.getOverlays());
 }

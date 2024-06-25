@@ -3,15 +3,15 @@ import { useGrid } from "$/lib/components/editable-grid/editable-grid.context";
 import { GridLineAxis } from "$/lib/components/editable-grid/editable-grid.model";
 import { EditableGridCellMergeDragInteraction } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-drag.interaction";
 import { calculateSplitPositionAndAxis } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split.utils";
-import { useStore } from "$/lib/utils/store/useStore";
+import { useListenable } from "$/lib/utils/emitter-listenable/use-listenable";
 import { useState } from "react";
 
 export const CellSplitIndicatorOverlay: React.FC<CustomOverlayProps> = ({
   overlay,
 }) => {
   const grid = useGrid();
-  const interactionStack = useStore(
-    grid.interactionStack,
+  const interactionStack = useListenable(
+    grid.interactionStack.onChange,
     grid.interactionStack,
   );
 

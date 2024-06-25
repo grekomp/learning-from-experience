@@ -9,16 +9,16 @@ import {
   getNewLinePosition,
 } from "$/lib/components/editable-grid/editable-grid.utils";
 import { EditableGridLineDragInteraction } from "$/lib/components/editable-grid/interactions/line-drag/line-drag.interaction";
+import { useListenable } from "$/lib/utils/emitter-listenable/use-listenable";
 import { cn } from "$/lib/utils/shadcnui";
-import { useStore } from "$/lib/utils/store/useStore";
 
 export const LineDragOverlay = ({ lineName, lineBounds }: LineOverlayProps) => {
   const grid = useGrid();
   const line = grid.findLine(lineName);
   const axis = lineBounds?.line ? grid.findLineAxis(lineBounds.line) : null;
 
-  const interactionStack = useStore(
-    grid.interactionStack,
+  const interactionStack = useListenable(
+    grid.interactionStack.onChange,
     grid.interactionStack,
   );
 

@@ -13,7 +13,8 @@ import {
   getNewCell,
   invertAxis,
 } from "$/lib/components/editable-grid/editable-grid.utils";
-import { writable, type WritableStore } from "$/lib/utils/store";
+import { Emitter } from "$/lib/utils/emitter-listenable/emitter";
+import { Listenable } from "$/lib/utils/emitter-listenable/listenable";
 import {
   WonderEventEmitter,
   bindEventDictionary,
@@ -23,7 +24,8 @@ import { InteractionStack } from "@grekomp/wonder-interaction-stack";
 
 export class EditableGridController {
   private __lines: EditableGridLines;
-  lines: WritableStore<EditableGridLines>;
+  private __onLinesChange = new Emitter<Readonly<EditableGridLines>>();
+  readonly onLinesChange = new Listenable(this.__onLinesChange);
   getLines(): Readonly<EditableGridLines> {
     return this.__lines;
   }
@@ -32,19 +34,23 @@ export class EditableGridController {
   }
 
   private __cells: EditableGridCellData[];
-  cells: WritableStore<EditableGridCellData[]>;
+  private __onCellsChange = new Emitter<Readonly<EditableGridCellData[]>>();
+  readonly onCellsChange = new Listenable(this.__onCellsChange);
   getCells(): Readonly<EditableGridCellData[]> {
     return this.__cells;
   }
 
   private __overlays: EditableGridOverlayData[];
-  overlays: WritableStore<EditableGridOverlayData[]>;
+  private __onOverlaysChange = new Emitter<
+    Readonly<EditableGridOverlayData[]>
+  >();
+  readonly onOverlaysChange = new Listenable(this.__onOverlaysChange);
   getOverlays(): Readonly<EditableGridOverlayData[]> {
     return this.__overlays;
   }
 
-  private store: WritableStore<EditableGridController> = writable(this);
-  subscribe = this.store.subscribe;
+  private __onChange = new Emitter<EditableGridController>();
+  readonly onChange = new Listenable(this.__onChange);
 
   gridContainer: HTMLElement | null = null;
   setContainer = (element: HTMLElement | null) => {
@@ -71,9 +77,6 @@ export class EditableGridController {
     this.__cells = cells;
     this.__overlays = overlays;
 
-    this.lines = writable(lines);
-    this.cells = writable(cells);
-    this.overlays = writable(overlays);
     this.eventEmitter = eventEmitter;
     this.interactionStack = interactionStack;
     this.events = bindEventDictionary(gridEvents, this.eventEmitter);
@@ -123,8 +126,9 @@ export class EditableGridController {
   }
   moveLine(line: EditableGridLine, newPosition: number) {
     line.position = newPosition;
-    this.lines.set(this.__lines);
-    this.store.set(this);
+    this.__lines = { ...this.__lines };
+    this.__onLinesChange.emit(this.__lines);
+    this.__onChange.emit(this);
   }
   getLineBounds(line: EditableGridLine): LineBounds | null {
     const lineAxis = this.findLineAxis(line);
@@ -284,9 +288,11 @@ export class EditableGridController {
     const newCell = getNewCell({ bounds: newCellBounds, splitFrom: cell });
     this.__cells.push(newCell);
 
-    this.lines.set(this.__lines);
-    this.cells.set(this.__cells);
-    this.store.set(this);
+    this.__lines = { ...this.__lines };
+    this.__onLinesChange.emit(this.__lines);
+    this.__cells = [...this.__cells];
+    this.__onCellsChange.emit(this.__cells);
+    this.__onChange.emit(this);
   }
 
   canMergeCells(
@@ -341,24 +347,26 @@ export class EditableGridController {
     this.__cells = this.__cells.filter((cell) => cell !== target);
     this.removeUnusedLines();
 
-    this.cells.set(this.__cells);
-    this.lines.set(this.__lines);
-    this.store.set(this);
+    this.__lines = { ...this.__lines };
+    this.__onLinesChange.emit(this.__lines);
+    this.__cells = [...this.__cells];
+    this.__onCellsChange.emit(this.__cells);
+    this.__onChange.emit(this);
   }
   // #endregion Splitting and merging cells
   // #endregion Managing cells
 
   // #region Managing overlays
   addOverlay(overlay: EditableGridOverlayData) {
-    this.__overlays.push(overlay);
-    this.overlays.set(this.__overlays);
-    this.store.set(this);
+    this.__overlays = [...this.__overlays, overlay];
+    this.__onOverlaysChange.emit(this.__overlays);
+    this.__onChange.emit(this);
   }
   removeOverlay(overlay: EditableGridOverlayData | undefined) {
     if (!overlay) return;
     this.__overlays = this.__overlays.filter((o) => o !== overlay);
-    this.overlays.set(this.__overlays);
-    this.store.set(this);
+    this.__onOverlaysChange.emit(this.__overlays);
+    this.__onChange.emit(this);
   }
   // #endregion Managing overlays
 }

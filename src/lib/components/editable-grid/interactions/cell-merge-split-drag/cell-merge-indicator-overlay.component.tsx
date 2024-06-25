@@ -1,14 +1,14 @@
 import { type CustomOverlayProps } from "$/lib/components/editable-grid/editable-grid-overlay.model";
 import { useGrid } from "$/lib/components/editable-grid/editable-grid.context";
 import { EditableGridCellMergeDragInteraction } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-drag.interaction";
-import { useStore } from "$/lib/utils/store/useStore";
+import { useListenable } from "$/lib/utils/emitter-listenable/use-listenable";
 
 export const CellMergeIndicatorOverlay: React.FC<CustomOverlayProps> = ({
   overlay,
 }) => {
   const grid = useGrid();
-  const interactionStack = useStore(
-    grid.interactionStack,
+  const interactionStack = useListenable(
+    grid.interactionStack.onChange,
     grid.interactionStack,
   );
 

@@ -3,14 +3,14 @@ import { EditableGridContext } from "$/lib/components/editable-grid/editable-gri
 import { getCssGridTemplateFromGridLines } from "$/lib/components/editable-grid/editable-grid.utils";
 import { GridCellsRenderer } from "$/lib/components/editable-grid/grid-cells-renderer.component";
 import { GridOverlaysRenderer } from "$/lib/components/editable-grid/grid-overlays-renderer";
-import { useStore } from "$/lib/utils/store/useStore";
+import { useListenable } from "$/lib/utils/emitter-listenable/use-listenable";
 
 export interface EditableGridProps {
   grid: EditableGridController;
 }
 
 export const EditableGrid: React.FC<EditableGridProps> = ({ grid }) => {
-  useStore(grid, grid);
+  useListenable(grid.onChange, grid);
 
   return (
     <EditableGridContext.Provider value={grid}>
