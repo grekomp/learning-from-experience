@@ -259,6 +259,10 @@ export class EditableGridController {
     cell: EditableGridCellData,
     axis: GridLineAxis,
     relativeSplitPosition = 0.5,
+    /**
+     * If true, the new cell will be placed before (above/to the left of) the original cell.
+     */
+    placeNewCellFirst = false,
   ) {
     const newLineName = `mid-${crypto.randomUUID()}`;
 
@@ -281,9 +285,14 @@ export class EditableGridController {
       row: { start: cell.bounds.row.start, end: cell.bounds.row.end },
       col: { start: cell.bounds.col.start, end: cell.bounds.col.end },
     };
-    newCellBounds[axis].start = newLine;
 
-    cell.bounds[axis].end = newLine;
+    if (placeNewCellFirst) {
+      newCellBounds[axis].end = newLine;
+      cell.bounds[axis].start = newLine;
+    } else {
+      newCellBounds[axis].start = newLine;
+      cell.bounds[axis].end = newLine;
+    }
 
     const newCell = getNewCell({ bounds: newCellBounds, splitFrom: cell });
     this.__cells.push(newCell);

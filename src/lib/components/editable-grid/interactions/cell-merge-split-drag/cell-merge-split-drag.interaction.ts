@@ -4,12 +4,13 @@ import {
   type EditableGridOverlayData,
 } from "$/lib/components/editable-grid/editable-grid-overlay.model";
 import {
+  GridLineAxis,
   type EditableGridCellData,
-  type GridLineAxis,
   type gridEvents,
 } from "$/lib/components/editable-grid/editable-grid.model";
 import { CellMergeCellsOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-cells-overlay.component";
 import { CellMergeIndicatorOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-indicator-overlay.component";
+import { GripPosition } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-drag-interaction.model";
 import { calculateSplitPositionAndAxis } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split.utils";
 import { CellSplitIndicatorOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-split-indicator-overlay.component";
 import type { DataTypeOf } from "@grekomp/wonder-event-emitter";
@@ -21,6 +22,7 @@ export interface EditableGridCellMergeDragInteractionData {
   toCell?: EditableGridCellData;
   startX: number;
   startY: number;
+  splitGripCorner: GripPosition;
   splitCoords?: {
     axis: GridLineAxis;
     position: number;
@@ -88,10 +90,19 @@ export class EditableGridCellMergeDragInteraction extends Interaction<EditableGr
 
     // Otherwise try to split the cell
     if (this.data.splitCoords) {
+      console.log("this.data.splitCoords.axis", this.data.splitCoords.axis);
+      const placeNewCellFirst =
+        this.data.splitCoords.axis === GridLineAxis.Row
+          ? this.data.splitGripCorner === GripPosition.TopLeft ||
+            this.data.splitGripCorner === GripPosition.TopRight
+          : this.data.splitGripCorner === GripPosition.TopLeft ||
+            this.data.splitGripCorner === GripPosition.BottomLeft;
+
       this.data.grid.splitCell(
         this.data.fromCell,
         this.data.splitCoords.axis,
         this.data.splitCoords.position,
+        placeNewCellFirst,
       );
     }
   }
