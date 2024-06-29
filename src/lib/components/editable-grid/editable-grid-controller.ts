@@ -345,13 +345,19 @@ export class EditableGridController {
     // Remove target
     // TODO: Destroy the target component and cleanup
     this.__cells = this.__cells.filter((cell) => cell !== target);
-    this.removeUnusedLines();
 
     this.__lines = { ...this.__lines };
     this.__onLinesChange.emit(this.__lines);
     this.__cells = [...this.__cells];
     this.__onCellsChange.emit(this.__cells);
     this.__onChange.emit(this);
+
+    // Delay removing the unused lines to  allow components to be animated out
+    requestAnimationFrame(() => {
+      this.removeUnusedLines();
+      this.__lines = { ...this.__lines };
+      this.__onLinesChange.emit(this.__lines);
+    });
   }
   // #endregion Splitting and merging cells
   // #endregion Managing cells
