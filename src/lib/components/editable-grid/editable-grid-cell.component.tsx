@@ -1,7 +1,8 @@
 import { EditableGridContext } from "$/lib/components/editable-grid/editable-grid.context";
 import { type EditableGridCellData } from "$/lib/components/editable-grid/editable-grid.model";
 import { cn } from "$/lib/utils/shadcnui";
-import { useCallback, useContext } from "react";
+import { motion } from "framer-motion";
+import React, { useCallback, useContext } from "react";
 
 export interface EditableGridCellProps {
   cell: EditableGridCellData;
@@ -9,11 +10,10 @@ export interface EditableGridCellProps {
   children?: React.ReactNode;
 }
 
-export const EditableGridCell: React.FC<EditableGridCellProps> = ({
-  cell,
-  className,
-  children,
-}) => {
+export const EditableGridCell = React.forwardRef<
+  HTMLDivElement,
+  EditableGridCellProps
+>(({ cell, className, children }, ref) => {
   const grid = useContext(EditableGridContext);
 
   const handleMouseEnter = useCallback(
@@ -43,7 +43,23 @@ export const EditableGridCell: React.FC<EditableGridCellProps> = ({
   );
 
   return (
-    <div
+    <motion.div
+      ref={ref}
+      layoutId={cell.id}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{
+        opacity: 0,
+        scale: 0.8,
+        zIndex: -1,
+        transition: { ease: "linear", duration: 0.1 },
+      }}
+      transition={{
+        type: "spring",
+        mass: 0.5,
+        damping: 20,
+        stiffness: 300,
+      }}
       role="cell"
       tabIndex={0}
       className={cn(
@@ -68,6 +84,8 @@ export const EditableGridCell: React.FC<EditableGridCellProps> = ({
       )}
       {/* TODO: Render cell component */}
       {children}
-    </div>
+    </motion.div>
   );
-};
+});
+
+EditableGridCell.displayName = "EditableGridCell";

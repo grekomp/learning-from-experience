@@ -4,6 +4,7 @@ import { getCssGridTemplateFromGridLines } from "$/lib/components/editable-grid/
 import { GridCellsRenderer } from "$/lib/components/editable-grid/grid-cells-renderer.component";
 import { GridOverlaysRenderer } from "$/lib/components/editable-grid/grid-overlays-renderer";
 import { useListenable } from "$/lib/utils/emitter-listenable/use-listenable";
+import { motion } from "framer-motion";
 
 export interface EditableGridProps {
   grid: EditableGridController;
@@ -14,7 +15,9 @@ export const EditableGrid: React.FC<EditableGridProps> = ({ grid }) => {
 
   return (
     <EditableGridContext.Provider value={grid}>
-      <div
+      <motion.div
+        layout
+        layoutRoot
         className="relative grid h-full w-full [--grid-gap:4px]"
         style={{
           gridTemplate: getCssGridTemplateFromGridLines(grid.getLines()),
@@ -28,7 +31,7 @@ export const EditableGrid: React.FC<EditableGridProps> = ({ grid }) => {
       >
         <GridCellsRenderer />
         <GridOverlaysRenderer />
-      </div>
+      </motion.div>
     </EditableGridContext.Provider>
   );
 };
