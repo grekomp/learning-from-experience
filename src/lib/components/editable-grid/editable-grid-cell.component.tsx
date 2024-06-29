@@ -47,7 +47,7 @@ export const EditableGridCell: React.FC<EditableGridCellProps> = ({
       role="cell"
       tabIndex={0}
       className={cn(
-        "group relative m-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 overflow-auto rounded-sm bg-muted/20",
+        "bg-grid-cell group relative m-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 overflow-auto rounded-sm",
         className,
       )}
       style={{

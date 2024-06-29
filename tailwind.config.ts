@@ -56,6 +56,7 @@ const config = {
           DEFAULT: "hsl(var(--card) / <alpha-value>)",
           foreground: "hsl(var(--card-foreground) / <alpha-value>)",
         },
+        "grid-cell": "hsl(var(--grid-cell) / <alpha-value>)",
       },
       borderRadius: {
         lg: "var(--radius)",
