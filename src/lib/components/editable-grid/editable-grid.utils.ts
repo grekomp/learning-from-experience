@@ -1,5 +1,4 @@
 import {
-  type EditableGridLineId,
   GridLineAxis,
   gridBoundingLines,
   gridLineSnapDistance,
@@ -8,6 +7,7 @@ import {
   type EditableGridCellBounds,
   type EditableGridCellData,
   type EditableGridLine,
+  type EditableGridLineId,
   type EditableGridLines,
 } from "$/lib/components/editable-grid/editable-grid.model";
 import { isDefined } from "$/lib/utils/filter.utils";
@@ -182,6 +182,7 @@ export function getNewCell({
   splitFrom,
 }: GetNewCellProps): EditableGridCellData {
   return {
+    id: crypto.randomUUID(),
     bounds,
     component: splitFrom.component,
     title: `Split from ${splitFrom.title}`,

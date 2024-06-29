@@ -39,6 +39,7 @@ export interface EditableGridCellBoundsAxis {
 }
 
 export interface EditableGridCellData {
+  id: string;
   bounds: EditableGridCellBounds;
   title?: string;
   component?: React.Component;
