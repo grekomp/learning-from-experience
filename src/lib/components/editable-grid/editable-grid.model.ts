@@ -42,7 +42,7 @@ export interface EditableGridCellData {
   id: string;
   bounds: EditableGridCellBounds;
   title?: string;
-  component?: React.Component;
+  component?: React.ComponentType;
 }
 
 // TODO: Replace with branded types
