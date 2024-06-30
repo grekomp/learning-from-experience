@@ -45,6 +45,7 @@ const cellSplitOverlay: EditableGridOverlayData = {
   targetType: OverlayTargetType.Custom,
   component: CellSplitIndicatorOverlay,
   zIndex: 20,
+  pointerEvents: "none",
 };
 const cellsOverlay: EditableGridOverlayData = {
   id: crypto.randomUUID(),
@@ -90,19 +91,11 @@ export class EditableGridCellMergeDragInteraction extends Interaction<EditableGr
 
     // Otherwise try to split the cell
     if (this.data.splitCoords) {
-      console.log("this.data.splitCoords.axis", this.data.splitCoords.axis);
-      const placeNewCellFirst =
-        this.data.splitCoords.axis === GridLineAxis.Row
-          ? this.data.splitGripCorner === GripPosition.TopLeft ||
-            this.data.splitGripCorner === GripPosition.TopRight
-          : this.data.splitGripCorner === GripPosition.TopLeft ||
-            this.data.splitGripCorner === GripPosition.BottomLeft;
-
       this.data.grid.splitCell(
         this.data.fromCell,
         this.data.splitCoords.axis,
         this.data.splitCoords.position,
-        placeNewCellFirst,
+        this.shouldPlaceNewCellFirst(),
       );
     }
   }
@@ -110,6 +103,7 @@ export class EditableGridCellMergeDragInteraction extends Interaction<EditableGr
     this.data.grid.events.cell.mouseEnter.off(this.onCellMouseEnter);
     this.data.grid.events.cell.click.off(this.onCellClick);
     this.data.grid.events.cell.mouseMove.off(this.onCellMouseMove);
+    this.data.grid.removeOverlay(cellSplitOverlay);
     this.data.grid.removeOverlay(containerOverlay);
     this.data.grid.removeOverlay(cellsOverlay);
     this.data.grid.removeOverlay(mergeAreaOverlay);
@@ -160,5 +154,15 @@ export class EditableGridCellMergeDragInteraction extends Interaction<EditableGr
   };
   onCellClick = () => {
     this.complete();
+  };
+
+  shouldPlaceNewCellFirst = () => {
+    if (!this.data.splitCoords) return false;
+
+    return this.data.splitCoords.axis === GridLineAxis.Row
+      ? this.data.splitGripCorner === GripPosition.TopLeft ||
+          this.data.splitGripCorner === GripPosition.TopRight
+      : this.data.splitGripCorner === GripPosition.TopLeft ||
+          this.data.splitGripCorner === GripPosition.BottomLeft;
   };
 }

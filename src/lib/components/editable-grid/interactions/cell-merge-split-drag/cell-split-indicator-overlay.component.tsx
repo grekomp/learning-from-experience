@@ -2,9 +2,8 @@ import { type CustomOverlayProps } from "$/lib/components/editable-grid/editable
 import { useGrid } from "$/lib/components/editable-grid/editable-grid.context";
 import { GridLineAxis } from "$/lib/components/editable-grid/editable-grid.model";
 import { EditableGridCellMergeDragInteraction } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-drag.interaction";
-import { calculateSplitPositionAndAxis } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split.utils";
 import { useListenable } from "$/lib/utils/emitter-listenable/use-listenable";
-import { useState } from "react";
+import { cn } from "$/lib/utils/shadcnui";
 
 export const CellSplitIndicatorOverlay: React.FC<CustomOverlayProps> = ({
   overlay,
@@ -19,44 +18,10 @@ export const CellSplitIndicatorOverlay: React.FC<CustomOverlayProps> = ({
     EditableGridCellMergeDragInteraction,
   );
   const cell = interaction?.data.fromCell;
+  const splitCoords = interaction?.data.splitCoords;
+  const placeNewCellFirst = interaction?.shouldPlaceNewCellFirst();
 
-  const [showLine, setShowLine] = useState(false);
-  const [lineAxis, setLineAxis] = useState(GridLineAxis.Col);
-  const [linePosition, setLinePosition] = useState(0);
-
-  const handleMouseMove = (event: React.MouseEvent) => {
-    if (!interaction) return;
-    if (!grid.gridContainer) return;
-    if (!cell) return;
-
-    grid.events.cell.mouseMove.emit({ cell, originalEvent: event });
-
-    const { startX, startY } = interaction.data;
-    const { clientX, clientY, target } = event;
-
-    if (target instanceof HTMLElement === false) return;
-
-    const splitCoords = calculateSplitPositionAndAxis({
-      startX,
-      startY,
-      clientX,
-      clientY,
-      target,
-      cell,
-      grid,
-    });
-
-    if (splitCoords == null) {
-      setShowLine(false);
-      return;
-    }
-
-    setLineAxis(splitCoords.axis);
-    setLinePosition(splitCoords.position);
-    setShowLine(true);
-  };
-
-  if (!cell) return null;
+  if (!cell || !splitCoords) return null;
 
   return (
     <div
@@ -68,22 +33,42 @@ export const CellSplitIndicatorOverlay: React.FC<CustomOverlayProps> = ({
         zIndex: overlay.zIndex,
         pointerEvents: overlay.pointerEvents,
       }}
-      className="relative opacity-50"
-      onMouseMove={handleMouseMove}
+      className="relative"
       role="presentation"
     >
-      {showLine &&
-        (lineAxis === GridLineAxis.Row ? (
-          <div
-            style={{ top: `${linePosition * 100}%` }}
-            className="absolute left-0 right-0 h-[2px] bg-accent-foreground"
-          ></div>
-        ) : (
-          <div
-            style={{ left: `${linePosition * 100}%` }}
-            className="absolute bottom-0 top-0 w-[2px] bg-accent-foreground"
-          ></div>
-        ))}
+      <div
+        className={cn("absolute bg-accent/35", {
+          ["width-full left-0 right-0"]: splitCoords.axis === GridLineAxis.Row,
+          ["height-full bottom-0 top-0"]: splitCoords.axis === GridLineAxis.Col,
+          ["top-0"]: splitCoords.axis === GridLineAxis.Row && placeNewCellFirst,
+          ["bottom-0"]:
+            splitCoords.axis === GridLineAxis.Row && !placeNewCellFirst,
+          ["left-0"]:
+            splitCoords.axis === GridLineAxis.Col && placeNewCellFirst,
+          ["right-0"]:
+            splitCoords.axis === GridLineAxis.Col && !placeNewCellFirst,
+        })}
+        style={
+          splitCoords.axis === GridLineAxis.Row
+            ? {
+                height: `${(placeNewCellFirst ? splitCoords.position : 1 - splitCoords.position) * 100}%`,
+              }
+            : {
+                width: `${(placeNewCellFirst ? splitCoords.position : 1 - splitCoords.position) * 100}%`,
+              }
+        }
+      ></div>
+      {splitCoords.axis === GridLineAxis.Row ? (
+        <div
+          style={{ top: `${splitCoords.position * 100}%` }}
+          className="absolute left-0 right-0 h-[2px] bg-accent-foreground/50"
+        ></div>
+      ) : (
+        <div
+          style={{ left: `${splitCoords.position * 100}%` }}
+          className="absolute bottom-0 top-0 w-[2px] bg-accent-foreground/50"
+        ></div>
+      )}
     </div>
   );
 };
