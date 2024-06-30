@@ -42,6 +42,8 @@ export const EditableGridCell = React.forwardRef<
     [cell, grid],
   );
 
+  const Component = cell.component;
+
   return (
     <motion.div
       ref={ref}
@@ -63,7 +65,7 @@ export const EditableGridCell = React.forwardRef<
       role="cell"
       tabIndex={0}
       className={cn(
-        "bg-grid-cell group relative m-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 overflow-auto rounded-sm",
+        "group relative m-[calc(var(--grid-gap)/2)] min-h-0 min-w-0 overflow-auto rounded-sm bg-grid-cell",
         className,
       )}
       style={{
@@ -83,6 +85,7 @@ export const EditableGridCell = React.forwardRef<
         </div>
       )}
       {/* TODO: Render cell component */}
+      {Component && <Component />}
       {children}
     </motion.div>
   );
