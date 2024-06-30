@@ -33,7 +33,7 @@ export const CellMergeIndicatorOverlay: React.FC<CustomOverlayProps> = ({
         zIndex: overlay.zIndex,
         pointerEvents: overlay.pointerEvents,
       }}
-      className="z-40 bg-neutral-900 opacity-80"
+      className="z-40 bg-accent/35 opacity-80"
     />
   );
 };
