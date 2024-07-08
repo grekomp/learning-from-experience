@@ -13,6 +13,7 @@ import { CellMergeIndicatorOverlay } from "$/lib/components/editable-grid/intera
 import { GripPosition } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-drag-interaction.model";
 import { calculateSplitPositionAndAxis } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split.utils";
 import { CellSplitIndicatorOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-split-indicator-overlay.component";
+import { uuid } from "$/lib/utils/uuid";
 import type { DataTypeOf } from "@grekomp/wonder-event-emitter";
 import { Interaction } from "@grekomp/wonder-interaction-stack";
 
@@ -34,27 +35,27 @@ export interface EditableGridCellMergeDragInteractionData {
  */
 const axisAlignedDistanceThreshold = 20;
 const mergeAreaOverlay: EditableGridOverlayData = {
-  id: crypto.randomUUID(),
+  id: uuid(),
   targetType: OverlayTargetType.Custom,
   component: CellMergeIndicatorOverlay,
   zIndex: 20,
   pointerEvents: "none",
 };
 const cellSplitOverlay: EditableGridOverlayData = {
-  id: crypto.randomUUID(),
+  id: uuid(),
   targetType: OverlayTargetType.Custom,
   component: CellSplitIndicatorOverlay,
   zIndex: 20,
   pointerEvents: "none",
 };
 const cellsOverlay: EditableGridOverlayData = {
-  id: crypto.randomUUID(),
+  id: uuid(),
   targetType: OverlayTargetType.Cells,
   component: CellMergeCellsOverlay,
   zIndex: 10,
 };
 const containerOverlay: EditableGridOverlayData = {
-  id: crypto.randomUUID(),
+  id: uuid(),
   targetType: OverlayTargetType.Container,
 };
 

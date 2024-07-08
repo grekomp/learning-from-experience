@@ -15,6 +15,7 @@ import {
 } from "$/lib/components/editable-grid/editable-grid.utils";
 import { Emitter } from "$/lib/utils/emitter-listenable/emitter";
 import { Listenable } from "$/lib/utils/emitter-listenable/listenable";
+import { uuid } from "$/lib/utils/uuid";
 import {
   WonderEventEmitter,
   bindEventDictionary,
@@ -264,7 +265,7 @@ export class EditableGridController {
      */
     placeNewCellFirst = false,
   ) {
-    const newLineName = `mid-${crypto.randomUUID()}`;
+    const newLineName = `mid-${uuid()}`;
 
     const startLine = cell.bounds[axis].start;
     const endLine = cell.bounds[axis].end;

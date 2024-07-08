@@ -12,6 +12,7 @@ import {
   calculateRelativePosition,
   getNewLinePosition,
 } from "$/lib/components/editable-grid/editable-grid.utils";
+import { uuid } from "$/lib/utils/uuid";
 import type { DataTypeOf } from "@grekomp/wonder-event-emitter";
 import { Interaction } from "@grekomp/wonder-interaction-stack";
 
@@ -22,7 +23,7 @@ export interface EditableGridLineDragInteractionData {
 }
 
 const overlay: EditableGridOverlayData = {
-  id: crypto.randomUUID(),
+  id: uuid(),
   targetType: OverlayTargetType.Container,
 };
 

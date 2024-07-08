@@ -9,6 +9,7 @@ import {
 } from "$/lib/components/editable-grid/editable-grid.model";
 import { CellMergeSplitGripOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-grip-overlay.component";
 import { LineDragOverlay } from "$/lib/components/editable-grid/interactions/line-drag/line-drag-overlay.component";
+import { uuid } from "$/lib/utils/uuid";
 
 const colLines = {
   start: {
@@ -62,7 +63,7 @@ const rowLines = {
 
 const initialCells: EditableGridCellData[] = [
   {
-    id: crypto.randomUUID(),
+    id: uuid(),
     bounds: {
       row: { start: rowLines.start, end: rowLines.mid2 },
       col: { start: colLines.start, end: colLines.mid1 },
@@ -70,7 +71,7 @@ const initialCells: EditableGridCellData[] = [
     title: "Cell 1",
   },
   {
-    id: crypto.randomUUID(),
+    id: uuid(),
     bounds: {
       row: { start: rowLines.mid2, end: rowLines.mid4 },
       col: { start: colLines.start, end: colLines.mid1 },
@@ -78,7 +79,7 @@ const initialCells: EditableGridCellData[] = [
     title: "Cell 2",
   },
   {
-    id: crypto.randomUUID(),
+    id: uuid(),
     bounds: {
       row: { start: rowLines.mid3, end: rowLines.mid4 },
       col: { start: colLines.mid1, end: colLines.mid3 },
@@ -86,7 +87,7 @@ const initialCells: EditableGridCellData[] = [
     title: "Cell 6",
   },
   {
-    id: crypto.randomUUID(),
+    id: uuid(),
     bounds: {
       row: { start: rowLines.start, end: rowLines.mid3 },
       col: { start: colLines.mid1, end: colLines.mid3 },
@@ -94,7 +95,7 @@ const initialCells: EditableGridCellData[] = [
     title: "Cell 3",
   },
   {
-    id: crypto.randomUUID(),
+    id: uuid(),
     bounds: {
       row: { start: rowLines.start, end: rowLines.mid1 },
       col: { start: colLines.mid3, end: colLines.end },
@@ -102,7 +103,7 @@ const initialCells: EditableGridCellData[] = [
     title: "Cell 4",
   },
   {
-    id: crypto.randomUUID(),
+    id: uuid(),
     bounds: {
       row: { start: rowLines.mid1, end: rowLines.mid4 },
       col: { start: colLines.mid3, end: colLines.end },
@@ -111,7 +112,7 @@ const initialCells: EditableGridCellData[] = [
   },
 
   {
-    id: crypto.randomUUID(),
+    id: uuid(),
     bounds: {
       row: { start: rowLines.mid4, end: rowLines.end },
       col: { start: colLines.start, end: colLines.mid2 },
@@ -119,7 +120,7 @@ const initialCells: EditableGridCellData[] = [
     title: "Cell 7",
   },
   {
-    id: crypto.randomUUID(),
+    id: uuid(),
     bounds: {
       row: { start: rowLines.mid4, end: rowLines.end },
       col: { start: colLines.mid2, end: colLines.end },
@@ -136,13 +137,13 @@ const gridController = new EditableGridController({
   },
   overlays: [
     {
-      id: crypto.randomUUID(),
+      id: uuid(),
       targetType: OverlayTargetType.Lines,
       zIndex: 1,
       component: LineDragOverlay,
     },
     {
-      id: crypto.randomUUID(),
+      id: uuid(),
       targetType: OverlayTargetType.Cells,
       component: CellMergeSplitGripOverlay,
     },

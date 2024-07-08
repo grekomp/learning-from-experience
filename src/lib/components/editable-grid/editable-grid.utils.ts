@@ -11,6 +11,7 @@ import {
   type EditableGridLines,
 } from "$/lib/components/editable-grid/editable-grid.model";
 import { isDefined } from "$/lib/utils/filter.utils";
+import { uuid } from "$/lib/utils/uuid";
 
 export function getCssGridTemplateFromGridLines(
   gridLines: EditableGridLines,
@@ -182,7 +183,7 @@ export function getNewCell({
   splitFrom,
 }: GetNewCellProps): EditableGridCellData {
   return {
-    id: crypto.randomUUID(),
+    id: uuid(),
     bounds,
     component: splitFrom.component,
     title: `Split from ${splitFrom.title}`,
