@@ -12,6 +12,7 @@ import { flow } from "$/lib/utils/functions/flow";
 import { tap } from "$/lib/utils/functions/tap";
 import { type Writable } from "$/lib/utils/types/writable";
 import { useEvent } from "$/lib/utils/use-event";
+import { useEventDict } from "$/lib/utils/use-event-dict";
 import { useEffect, useRef, useState } from "react";
 
 export interface UseTreeViewProps {
@@ -91,17 +92,18 @@ export function useTreeView({
 
   handlerContext.handlers = boundHandlers;
 
+  const memoizedHandlers: TreeViewProps["handlers"] = useEventDict({
+    handleKeyDown: handleKeyDownWithBoundState,
+    handleItemClick: handleItemClickWithBoundState,
+    handleExpandCollapseClick: handleExpandCollapseClickWithBoundState,
+  });
+
   const getTreeViewProps = useEvent(
     (): TreeViewProps => ({
       items: treeStateRef.current.items,
       options,
       focusedItemId: treeStateRef.current.focusedItemId ?? null,
-
-      handlers: {
-        handleKeyDown: handleKeyDownWithBoundState,
-        handleItemClick: handleItemClickWithBoundState,
-        handleExpandCollapseClick: handleExpandCollapseClickWithBoundState,
-      },
+      handlers: memoizedHandlers,
     }),
   );
 
