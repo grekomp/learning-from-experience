@@ -9,6 +9,7 @@ import {
 } from "$/lib/components/editable-grid/editable-grid.model";
 import { CellMergeSplitGripOverlay } from "$/lib/components/editable-grid/interactions/cell-merge-split-drag/cell-merge-split-grip-overlay.component";
 import { LineDragOverlay } from "$/lib/components/editable-grid/interactions/line-drag/line-drag-overlay.component";
+import { TreeViewContainer } from "$/lib/components/tree-view/tmp-tree-view-container";
 import { uuid } from "$/lib/utils/uuid";
 
 const colLines = {
@@ -69,6 +70,11 @@ const initialCells: EditableGridCellData[] = [
       col: { start: colLines.start, end: colLines.mid1 },
     },
     title: "Cell 1",
+    component: () => (
+      <div className="p-4">
+        <TreeViewContainer />
+      </div>
+    ),
   },
   {
     id: uuid(),
@@ -146,6 +152,7 @@ const gridController = new EditableGridController({
       id: uuid(),
       targetType: OverlayTargetType.Cells,
       component: CellMergeSplitGripOverlay,
+      pointerEvents: "none",
     },
   ],
 });
