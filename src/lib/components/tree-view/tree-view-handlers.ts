@@ -71,7 +71,7 @@ function setExpandedRecursiveInner(
 export const defaultTreeViewHandlers: TreeViewHandlers = {
   replaceSelected(_context, state, selectedItemIds) {
     return produce(state, (draft) => {
-      draft.items = flatMap(draft.items, (item) => {
+      flatten(draft.items).forEach((item) => {
         item.isSelected = selectedItemIds.includes(item.id);
       });
     });
@@ -142,7 +142,7 @@ export const defaultTreeViewHandlers: TreeViewHandlers = {
   },
 
   handleItemClick: (context, state, itemId, event) => {
-    return pipe(
+    const nextState = pipe(
       state,
       (s) => {
         if (event.ctrlKey || event.metaKey)
@@ -153,6 +153,10 @@ export const defaultTreeViewHandlers: TreeViewHandlers = {
       },
       (s) => context.handlers.setFocused(s, itemId),
     );
+
+    console.log("Object.is(state, nextState)", Object.is(state, nextState));
+
+    return nextState;
   },
   handleExpandCollapseClick(context, state, itemId) {
     return context.handlers.toggleExpanded(state, [itemId]);
