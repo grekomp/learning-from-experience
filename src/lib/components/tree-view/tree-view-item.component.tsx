@@ -67,19 +67,21 @@ export const TreeViewItem: React.FC<TreeViewItemProps> = React.memo(
             handleItemClick?.(data.id, event);
           }}
         >
-          {!!children && (
-            <Button
-              tabIndex={-1}
-              variant={"ghost"}
-              size={"icon-sm"}
-              onClick={(event) => handleExpandCollapseClick(data.id, event)}
-            >
-              {isExpanded ? <ChevronDown /> : <ChevronRight />}
-              <span className={"sr-only"}>
-                {isExpanded ? "Collapse" : "Expand"}
-              </span>
-            </Button>
-          )}
+          <div className="h-4 w-4">
+            {children && (
+              <Button
+                tabIndex={-1}
+                variant={"ghost"}
+                size={"icon-sm"}
+                onClick={(event) => handleExpandCollapseClick(data.id, event)}
+              >
+                {isExpanded ? <ChevronDown /> : <ChevronRight />}
+                <span className={"sr-only"}>
+                  {isExpanded ? "Collapse" : "Expand"}
+                </span>
+              </Button>
+            )}
+          </div>
           {(icon ?? defaultIcon) && (
             <Slot className={"h-4 w-4"} aria-hidden>
               {icon ?? defaultIcon}

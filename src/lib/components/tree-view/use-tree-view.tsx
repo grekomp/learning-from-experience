@@ -13,7 +13,7 @@ import { tap } from "$/lib/utils/functions/tap";
 import { type Writable } from "$/lib/utils/types/writable";
 import { useEvent } from "$/lib/utils/use-event";
 import { useEventDict } from "$/lib/utils/use-event-dict";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 export interface UseTreeViewProps {
   initialItems: TreeViewItemData[];
@@ -36,15 +36,9 @@ export function useTreeView({
 
   const setTreeState = useEvent((state: TreeViewState) => {
     if (Object.is(state, treeStateRef.current)) return;
-
-    console.log("Setting tree state", state);
     treeStateRef.current = state;
     __setTreeState(state);
   });
-
-  useEffect(() => {
-    console.log("Tree state changed", treeState);
-  }, [treeState]);
 
   const handlersWithDefaults = {
     ...defaultTreeViewHandlers,

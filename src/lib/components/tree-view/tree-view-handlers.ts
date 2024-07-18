@@ -142,7 +142,7 @@ export const defaultTreeViewHandlers: TreeViewHandlers = {
   },
 
   handleItemClick: (context, state, itemId, event) => {
-    const nextState = pipe(
+    return pipe(
       state,
       (s) => {
         if (event.ctrlKey || event.metaKey)
@@ -153,10 +153,6 @@ export const defaultTreeViewHandlers: TreeViewHandlers = {
       },
       (s) => context.handlers.setFocused(s, itemId),
     );
-
-    console.log("Object.is(state, nextState)", Object.is(state, nextState));
-
-    return nextState;
   },
   handleExpandCollapseClick(context, state, itemId) {
     return context.handlers.toggleExpanded(state, [itemId]);
