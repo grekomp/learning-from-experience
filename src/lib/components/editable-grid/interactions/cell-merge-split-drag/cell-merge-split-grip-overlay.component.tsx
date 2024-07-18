@@ -58,17 +58,18 @@ export const CellMergeSplitGripOverlay: React.FC<CellOverlayProps> = ({
   }, [interactionStack]);
 
   return (
-    <div className={"pointer-events-auto contents"}>
+    <div className={"pointer-events-none contents"}>
       <TooltipProvider disableHoverableContent>
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              className="invisible absolute right-0 top-0 z-[60] inline-flex cursor-crosshair select-none items-center justify-center whitespace-nowrap rounded-md p-1 text-sm font-medium text-muted-foreground ring-offset-background transition-colors hover:bg-muted/50 hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-hover:visible"
+              className="pointer-events-auto invisible absolute right-0 top-0 z-[60] inline-flex cursor-crosshair select-none items-center justify-center whitespace-nowrap rounded-md p-1 text-sm font-medium text-muted-foreground ring-offset-background transition-colors hover:bg-muted/50 hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-hover:visible"
               onMouseDown={(event) =>
                 handleMouseDown(event, GripPosition.TopRight)
               }
             >
               <GripUpRight width={16} height={16} />
+              <span className={"sr-only"}>Merge or split cell</span>
             </button>
           </TooltipTrigger>
           <TooltipContent>
@@ -81,12 +82,13 @@ export const CellMergeSplitGripOverlay: React.FC<CellOverlayProps> = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              className="invisible absolute bottom-0 right-0 z-[60] inline-flex cursor-crosshair select-none items-center justify-center whitespace-nowrap rounded-md p-1 text-sm font-medium text-muted-foreground ring-offset-background transition-colors hover:bg-muted/50 hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-hover:visible"
+              className="pointer-events-auto invisible absolute bottom-0 right-0 z-[60] inline-flex cursor-crosshair select-none items-center justify-center whitespace-nowrap rounded-md p-1 text-sm font-medium text-muted-foreground ring-offset-background transition-colors hover:bg-muted/50 hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-hover:visible"
               onMouseDown={(event) =>
                 handleMouseDown(event, GripPosition.BottomRight)
               }
             >
               <GripDownRight width={16} height={16} />
+              <span className={"sr-only"}>Merge or split cell</span>
             </button>
           </TooltipTrigger>
           <TooltipContent>
@@ -99,12 +101,13 @@ export const CellMergeSplitGripOverlay: React.FC<CellOverlayProps> = ({
         <Tooltip>
           <TooltipTrigger asChild>
             <button
-              className="invisible absolute bottom-0 left-0 z-[60] inline-flex cursor-crosshair select-none items-center justify-center whitespace-nowrap rounded-md p-1 text-sm font-medium text-muted-foreground ring-offset-background transition-colors hover:bg-muted/50 hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-hover:visible"
+              className="pointer-events-auto invisible absolute bottom-0 left-0 z-[60] inline-flex cursor-crosshair select-none items-center justify-center whitespace-nowrap rounded-md p-1 text-sm font-medium text-muted-foreground ring-offset-background transition-colors hover:bg-muted/50 hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-hover:visible"
               onMouseDown={(event) =>
                 handleMouseDown(event, GripPosition.BottomLeft)
               }
             >
               <GripDownLeft width={16} height={16} />
+              <span className={"sr-only"}>Merge or split cell</span>
             </button>
           </TooltipTrigger>
           <TooltipContent>
